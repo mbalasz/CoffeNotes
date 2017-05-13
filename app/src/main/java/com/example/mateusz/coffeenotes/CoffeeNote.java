@@ -4,5 +4,5 @@ import com.google.auto.factory.AutoFactory;
 
 @AutoFactory
 public class CoffeeNote {
-  
+
 }
