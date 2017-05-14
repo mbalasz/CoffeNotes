@@ -15,6 +15,7 @@ public class CoffeeNoteFragment extends Fragment {
   private Spinner coffeeTypeSpinner;
 
   public CoffeeNoteFragment() {
+
   }
 
   public static CoffeeNoteFragment newInstance() {
@@ -24,6 +25,8 @@ public class CoffeeNoteFragment extends Fragment {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    coffeeNote = new CoffeeNote();
   }
 
   @Override
@@ -38,18 +41,17 @@ public class CoffeeNoteFragment extends Fragment {
 
   private void createCoffeeTypeSpinner(View parentView) {
     coffeeTypeSpinner = (Spinner) parentView.findViewById(R.id.coffee_type_spinner);
-    ArrayAdapter<CharSequence> adapter =
-        ArrayAdapter.createFromResource(
-            getContext(), R.array.coffee_types_array, android.R.layout.simple_spinner_item);
+    ArrayAdapter<CoffeeType> adapter =
+        new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, CoffeeType.values());
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     coffeeTypeSpinner.setAdapter(adapter);
 
     coffeeTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        CharSequence coffeeType = (CharSequence) parent.getItemAtPosition(position);
-
-        Toast.makeText(getContext(), coffeeType, Toast.LENGTH_SHORT).show();
+        CoffeeType coffeeType = (CoffeeType) parent.getItemAtPosition(position);
+        coffeeNote.setCoffeeType(coffeeType);
+        Toast.makeText(getContext(), coffeeType.toString(), Toast.LENGTH_SHORT).show();
       }
 
       @Override
