@@ -1,22 +1,11 @@
 package com.example.mateusz.coffeenotes;
 
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
-public class CoffeeNoteActivity extends AppCompatActivity {
+public class CoffeeNoteActivity extends SingleFragmentActivity {
+
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      setContentView(R.layout.activity_coffee_note);
-
-    FragmentManager fragmentManager = getSupportFragmentManager();
-    Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
-
-    if (fragment == null) {
-      fragment = CoffeeNoteFragment.newInstance();
-      fragmentManager.beginTransaction().add(R.id.fragment_container, fragment).commit();
-    }
+  protected Fragment createFragment() {
+    return CoffeeNoteFragment.newInstance();
   }
 }

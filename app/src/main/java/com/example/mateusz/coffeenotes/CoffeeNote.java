@@ -2,11 +2,20 @@ package com.example.mateusz.coffeenotes;
 
 class CoffeeNote {
   private CoffeeType coffeeType;
+  private BeansType beansType;
   private double weight;
   private double grinderSettings;
 
   void setCoffeeType(CoffeeType coffeeType) {
     this.coffeeType = coffeeType;
+  }
+
+  void setBeansType(BeansType beansType) {
+    this.beansType = beansType;
+  }
+
+  public BeansType getBeansType() {
+    return beansType;
   }
 
   void setWeight(double weight) {
@@ -16,6 +25,7 @@ class CoffeeNote {
   void setGrinderSettings(double grinderSettings) {
     this.grinderSettings = grinderSettings;
   }
+
 
   static class Builder {
     private CoffeeNote coffeeNote;

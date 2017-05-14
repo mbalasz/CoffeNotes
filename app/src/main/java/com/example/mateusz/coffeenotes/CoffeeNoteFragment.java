@@ -1,7 +1,9 @@
 package com.example.mateusz.coffeenotes;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 public class CoffeeNoteFragment extends Fragment {
   private CoffeeNote coffeeNote;
   private Spinner coffeeTypeSpinner;
+  private CardView beansTypeCardView;
 
   public CoffeeNoteFragment() {
 
@@ -27,6 +30,8 @@ public class CoffeeNoteFragment extends Fragment {
     super.onCreate(savedInstanceState);
 
     coffeeNote = new CoffeeNote();
+    // TODO remove this.
+    coffeeNote.setBeansType(BeansTypeDataManager.getInstance().getBeansTypeList().get(2));
   }
 
   @Override
@@ -35,6 +40,7 @@ public class CoffeeNoteFragment extends Fragment {
     View view = inflater.inflate(R.layout.fragment_coffee_note, container, false);
 
     createCoffeeTypeSpinner(view);
+    createBeansTypeCardView(view);
 
     return view;
   }
@@ -56,6 +62,18 @@ public class CoffeeNoteFragment extends Fragment {
 
       @Override
       public void onNothingSelected(AdapterView<?> parent) {
+      }
+    });
+  }
+
+  private void createBeansTypeCardView(View parentView) {
+    beansTypeCardView = (CardView) parentView.findViewById(R.id.beans_type_card_view);
+    beansTypeCardView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent =
+            BeansTypeListActivity.newIntent(getContext(), coffeeNote.getBeansType().getId());
+        startActivity(intent);
       }
     });
   }
