@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">CoffeeNotes</string>
+
+    <string-array name="coffee_types_array">
+        <item>Espresso</item>
+        <item>Latte</item>
+        <item>Flat white</item>
+    </string-array>
 </resources>
