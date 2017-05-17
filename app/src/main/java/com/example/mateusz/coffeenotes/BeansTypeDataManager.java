@@ -14,6 +14,7 @@ public class BeansTypeDataManager {
     for (int i = 0; i < 10; ++i) {
       BeansType beansType = new BeansType();
       beansType.setName("Type #" + Integer.toString(i));
+      beansType.setCountry("Country #" + Integer.toString(i));
       beansTypeList.add(beansType);
     }
   }

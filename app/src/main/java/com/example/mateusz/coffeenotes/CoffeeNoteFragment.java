@@ -10,12 +10,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class CoffeeNoteFragment extends Fragment {
   private CoffeeNote coffeeNote;
   private Spinner coffeeTypeSpinner;
   private CardView beansTypeCardView;
+  private TextView beansNameTextView;
+  private TextView beansCountryTextView;
 
   public CoffeeNoteFragment() {
 
@@ -29,6 +32,7 @@ public class CoffeeNoteFragment extends Fragment {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
+    // TODO implement restoring coffee note from saved instance state.
     coffeeNote = new CoffeeNote();
     // TODO remove this.
     coffeeNote.setBeansType(BeansTypeDataManager.getInstance().getBeansTypeList().get(2));
@@ -76,5 +80,11 @@ public class CoffeeNoteFragment extends Fragment {
         startActivity(intent);
       }
     });
+
+    beansNameTextView = (TextView) parentView.findViewById(R.id.beans_name_text_view);
+    beansNameTextView.setText(coffeeNote.getBeansType().getName());
+
+    beansCountryTextView = (TextView) parentView.findViewById(R.id.beans_country_text_view);
+    beansCountryTextView.setText(coffeeNote.getBeansType().getCountry());
   }
 }
