@@ -1,5 +1,7 @@
 package com.example.mateusz.coffeenotes;
 
+import android.support.annotation.NonNull;
+
 class CoffeeNote {
   private CoffeeType coffeeType;
   private BeansType beansType;
@@ -34,16 +36,19 @@ class CoffeeNote {
       coffeeNote = new CoffeeNote();
     }
 
+    @NonNull
     Builder setCoffeeType(CoffeeType coffeeType) {
       coffeeNote.setCoffeeType(coffeeType);
       return this;
     }
 
+    @NonNull
     Builder setWeight(double weight) {
       coffeeNote.setWeight(weight);
       return this;
     }
 
+    @NonNull
     Builder setGrinderSettings(double grinderSettings) {
       coffeeNote.setGrinderSettings(grinderSettings);
       return this;

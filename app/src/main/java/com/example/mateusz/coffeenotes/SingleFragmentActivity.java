@@ -1,5 +1,6 @@
 package com.example.mateusz.coffeenotes;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -21,5 +22,6 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     }
   }
 
+  @NonNull
   protected abstract Fragment createFragment();
 }
