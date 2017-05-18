@@ -14,6 +14,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.UUID;
+
 import static android.app.Activity.RESULT_OK;
 
 public class CoffeeNoteFragment extends Fragment {
@@ -59,7 +61,12 @@ public class CoffeeNoteFragment extends Fragment {
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == SELECT_COFFEE_BEANS_TYPE_REQUEST) {
       if (resultCode == RESULT_OK) {
-
+        UUID selectedBeansTypeId =
+            (UUID) data.getSerializableExtra(BeansTypeListActivity.EXTRA_SELECTED_BEANS_TYPE_ID);
+        BeansType selectedBeansType =
+            BeansTypeDataManager.getInstance().getBeansTypeById(selectedBeansTypeId);
+        coffeeNote.setBeansType(selectedBeansType);
+        updateBeansTypeCardViewUi();
       }
     }
   }
@@ -97,9 +104,12 @@ public class CoffeeNoteFragment extends Fragment {
     });
 
     beansNameTextView = (TextView) parentView.findViewById(R.id.beans_name_text_view);
-    beansNameTextView.setText(coffeeNote.getBeansType().getName());
-
     beansCountryTextView = (TextView) parentView.findViewById(R.id.beans_country_text_view);
+    updateBeansTypeCardViewUi();
+  }
+
+  private void updateBeansTypeCardViewUi() {
+    beansNameTextView.setText(coffeeNote.getBeansType().getName());
     beansCountryTextView.setText(coffeeNote.getBeansType().getCountry());
   }
 }

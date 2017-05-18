@@ -1,5 +1,7 @@
 package com.example.mateusz.coffeenotes;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,9 +18,10 @@ import java.util.List;
 import java.util.UUID;
 
 public class BeansTypeListFragment extends Fragment {
-  private static final String ARG_HIGHLIGHTED_BEANS_TYPE_ID = "beans_type_id";
+  private static final String ARG_HIGHLIGHTED_BEANS_TYPE_ID = "highlighted_beans_type_id";
   private RecyclerView beansTypesRecyclerView;
   @Nullable private UUID highlightedBeansTypeId;
+  private OnBeansTypeSelectedListener onBeansTypeSelectedListener;
 
   public BeansTypeListFragment() {
     // Required empty public constructor
@@ -60,6 +63,24 @@ public class BeansTypeListFragment extends Fragment {
     return view;
   }
 
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+    try {
+      onBeansTypeSelectedListener = (OnBeansTypeSelectedListener) context;
+    } catch (ClassCastException e) {
+      throw new RuntimeException(
+          String.format(
+              "%s must implement %s interface",
+              context.toString(),
+              OnBeansTypeSelectedListener.class.toString()));
+    }
+  }
+
+  public interface OnBeansTypeSelectedListener {
+    void onBeansTypeSelected(BeansType beansType);
+  }
+
   private class BeansTypeAdapter
       extends RecyclerView.Adapter<BeansTypeAdapter.BeansTypeViewHolder> {
     private List<BeansType> beansTypesList;
@@ -69,11 +90,26 @@ public class BeansTypeListFragment extends Fragment {
     }
 
     public class BeansTypeViewHolder extends RecyclerView.ViewHolder {
-      public TextView beansNameTextView;
+      private TextView beansNameTextView;
+      private BeansType beansType;
 
       public BeansTypeViewHolder(@NonNull View itemView) {
         super(itemView);
         beansNameTextView = (TextView) itemView;
+        beansNameTextView.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            onBeansTypeSelectedListener.onBeansTypeSelected(beansType);
+          }
+        });
+      }
+
+      public void bindBeansType(BeansType beansType) {
+        this.beansType = beansType;
+        beansNameTextView.setText(beansType.getName());
+        if (beansType.getId().equals(highlightedBeansTypeId)) {
+          beansNameTextView.setTypeface(null, Typeface.BOLD);
+        }
       }
     }
 
@@ -88,11 +124,7 @@ public class BeansTypeListFragment extends Fragment {
     @Override
     public void onBindViewHolder(
         @NonNull BeansTypeAdapter.BeansTypeViewHolder holder, int position) {
-      BeansType beansType = beansTypesList.get(position);
-      holder.beansNameTextView.setText(beansType.getName());
-      if (beansType.getId().equals(highlightedBeansTypeId)) {
-        holder.beansNameTextView.setTypeface(null, Typeface.BOLD);
-      }
+      holder.bindBeansType(beansTypesList.get(position));
     }
 
     @Override

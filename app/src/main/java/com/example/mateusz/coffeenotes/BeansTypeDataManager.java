@@ -2,6 +2,7 @@ package com.example.mateusz.coffeenotes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class BeansTypeDataManager {
   private static BeansTypeDataManager instance;
@@ -24,6 +25,15 @@ public class BeansTypeDataManager {
       instance = new BeansTypeDataManager();
     }
     return instance;
+  }
+
+  public BeansType getBeansTypeById(UUID id) {
+    for (BeansType beansType : beansTypeList) {
+      if (beansType.getId().equals(id)) {
+        return beansType;
+      }
+    }
+    return null;
   }
 
   public List<BeansType> getBeansTypeList() {
