@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,8 +49,10 @@ public class BeansTypeListFragment extends Fragment {
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Bundle args = getArguments();
-    if (args.containsKey(ARG_HIGHLIGHTED_BEANS_TYPE_ID)) {
-      highlightedBeansTypeId = (UUID) args.getSerializable(ARG_HIGHLIGHTED_BEANS_TYPE_ID);
+    if (args != null) {
+      if (args.containsKey(ARG_HIGHLIGHTED_BEANS_TYPE_ID)) {
+        highlightedBeansTypeId = (UUID) args.getSerializable(ARG_HIGHLIGHTED_BEANS_TYPE_ID);
+      }
     }
     setHasOptionsMenu(true);
   }
