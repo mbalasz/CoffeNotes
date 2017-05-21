@@ -10,6 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -48,6 +51,7 @@ public class BeansTypeListFragment extends Fragment {
     if (args.containsKey(ARG_HIGHLIGHTED_BEANS_TYPE_ID)) {
       highlightedBeansTypeId = (UUID) args.getSerializable(ARG_HIGHLIGHTED_BEANS_TYPE_ID);
     }
+    setHasOptionsMenu(true);
   }
 
   @Override
@@ -75,6 +79,32 @@ public class BeansTypeListFragment extends Fragment {
               context.toString(),
               OnBeansTypeSelectedListener.class.toString()));
     }
+  }
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+    inflater.inflate(R.menu.fragment_beans_type_menu, menu);
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.menu_item_new_beans:
+        BeansType beansType = new BeansType();
+        BeansTypeDataManager.getInstance().addBeansType(beansType);
+        Intent intent = BeansTypeActivity.newIntent(getContext(), beansType.getId());
+        startActivity(intent);
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
+    }
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    beansTypesRecyclerView.getAdapter().notifyDataSetChanged();
   }
 
   public interface OnBeansTypeSelectedListener {
@@ -106,6 +136,10 @@ public class BeansTypeListFragment extends Fragment {
 
       public void bindBeansType(BeansType beansType) {
         this.beansType = beansType;
+        updateViewHolder();
+      }
+
+      private void updateViewHolder() {
         beansNameTextView.setText(beansType.getName());
         if (beansType.getId().equals(highlightedBeansTypeId)) {
           beansNameTextView.setTypeface(null, Typeface.BOLD);

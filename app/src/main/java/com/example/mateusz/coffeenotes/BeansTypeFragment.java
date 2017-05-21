@@ -12,7 +12,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.UUID;
+
 public class BeansTypeFragment extends Fragment {
+  private static final String ARG_BEANS_TYPE_ID = "beans_type_id";
+
   private BeansType beansType;
   private EditText beansNameEditText;
 
@@ -20,15 +24,19 @@ public class BeansTypeFragment extends Fragment {
   }
 
   @NonNull
-  public static BeansTypeFragment newInstance() {
-    return new BeansTypeFragment();
+  public static BeansTypeFragment newInstance(UUID beansTypeId) {
+    Bundle args = new Bundle();
+    args.putSerializable(ARG_BEANS_TYPE_ID, beansTypeId);
+    BeansTypeFragment fragment = new BeansTypeFragment();
+    fragment.setArguments(args);
+    return fragment;
   }
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    beansType = new BeansType();
+    UUID beansTypeId = (UUID) getArguments().getSerializable(ARG_BEANS_TYPE_ID);
+    beansType = BeansTypeDataManager.getInstance().getBeansTypeById(beansTypeId);
   }
 
   @Override
@@ -43,6 +51,7 @@ public class BeansTypeFragment extends Fragment {
 
   private void createBeansNameEditText(@NonNull View parentView) {
     beansNameEditText = (EditText) parentView.findViewById(R.id.beans_name_edit_text);
+    beansNameEditText.setText(beansType.getName());
     beansNameEditText.addTextChangedListener(new TextWatcher() {
       @Override
       public void beforeTextChanged(CharSequence s, int start, int count, int after) {}

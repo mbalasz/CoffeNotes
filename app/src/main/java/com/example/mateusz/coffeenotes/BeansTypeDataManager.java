@@ -20,6 +20,10 @@ public class BeansTypeDataManager {
     }
   }
 
+  public void addBeansType(BeansType beansType) {
+    beansTypeList.add(beansType);
+  }
+
   public static BeansTypeDataManager getInstance() {
     if (instance == null) {
       instance = new BeansTypeDataManager();

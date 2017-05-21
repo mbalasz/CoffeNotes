@@ -7,4 +7,5 @@
         <item>Latte</item>
         <item>Flat white</item>
     </string-array>
+    <string name="new_beans_type">New beans</string>
 </resources>
