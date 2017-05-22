@@ -21,8 +21,12 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.UUID;
 
+import static android.app.Activity.RESULT_OK;
+
 public class BeansTypeListFragment extends Fragment {
   private static final String ARG_HIGHLIGHTED_BEANS_TYPE_ID = "highlighted_beans_type_id";
+  private static final int EDIT_BEANS_TYPE_REQUEST = 1;
+
   private RecyclerView beansTypesRecyclerView;
   @Nullable private UUID highlightedBeansTypeId;
   private OnBeansTypeSelectedListener onBeansTypeSelectedListener;
@@ -79,25 +83,23 @@ public class BeansTypeListFragment extends Fragment {
       throw new RuntimeException(
           String.format(
               "%s must implement %s interface",
-              context.toString(),
-              OnBeansTypeSelectedListener.class.toString()));
+              context.getClass().getSimpleName(),
+              OnBeansTypeSelectedListener.class.getSimpleName()));
     }
   }
 
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     super.onCreateOptionsMenu(menu, inflater);
-    inflater.inflate(R.menu.fragment_beans_type_menu, menu);
+    inflater.inflate(R.menu.fragment_beans_type_list_menu, menu);
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
-      case R.id.menu_item_new_beans:
-        BeansType beansType = new BeansType();
-        BeansTypeDataManager.getInstance().addBeansType(beansType);
-        Intent intent = BeansTypeActivity.newIntent(getContext(), beansType.getId());
-        startActivity(intent);
+      case R.id.menu_item_new_beans_type:
+        Intent intent = BeansTypeActivity.newIntent(getContext());
+        startActivityForResult(intent, EDIT_BEANS_TYPE_REQUEST);
         return true;
       default:
         return super.onOptionsItemSelected(item);
@@ -105,9 +107,17 @@ public class BeansTypeListFragment extends Fragment {
   }
 
   @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == EDIT_BEANS_TYPE_REQUEST) {
+      if (resultCode == RESULT_OK) {
+        beansTypesRecyclerView.getAdapter().notifyDataSetChanged();
+      }
+    }
+  }
+
+  @Override
   public void onResume() {
     super.onResume();
-    beansTypesRecyclerView.getAdapter().notifyDataSetChanged();
   }
 
   public interface OnBeansTypeSelectedListener {

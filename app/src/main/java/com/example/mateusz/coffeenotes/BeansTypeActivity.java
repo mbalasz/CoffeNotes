@@ -4,17 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import java.util.UUID;
 
-public class BeansTypeActivity extends SingleFragmentActivity {
+public class BeansTypeActivity
+    extends SingleFragmentActivity implements BeansTypeFragment.OnBeansTypeEditFinishedListener {
   private static final String EXTRA_BEANS_TYPE_ID = "beans_type_id";
 
   public static Intent newIntent(Context packageContext, UUID beansTypeId) {
-    Intent intent = new Intent(packageContext, BeansTypeActivity.class);
+    Intent intent = newIntent(packageContext);
     intent.putExtra(EXTRA_BEANS_TYPE_ID, beansTypeId);
+    return intent;
+  }
+
+  public static Intent newIntent(Context packageContext) {
+    Intent intent = new Intent(packageContext, BeansTypeActivity.class);
     return intent;
   }
 
@@ -24,5 +28,17 @@ public class BeansTypeActivity extends SingleFragmentActivity {
     Intent intent = getIntent();
     UUID beansTypeId = (UUID) intent.getSerializableExtra(EXTRA_BEANS_TYPE_ID);
     return BeansTypeFragment.newInstance(beansTypeId);
+  }
+
+  @Override
+  public void onBeansTypeSaved() {
+    setResult(RESULT_OK);
+    finish();
+  }
+
+  @Override
+  public void onBeansTypeDiscarded() {
+    setResult(RESULT_CANCELED);
+    finish();
   }
 }
