@@ -17,8 +17,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".BeansTypeActivity"
-            android:parentActivityName=".BeansTypeListActivity">
+            android:name=".BeansTypeActivity">
         </activity>
         <activity android:name=".BeansTypeListActivity">
         </activity>

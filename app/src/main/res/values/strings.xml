@@ -8,4 +8,6 @@
         <item>Flat white</item>
     </string-array>
     <string name="new_beans_type">New beans</string>
+    <string name="save">Save</string>
+    <string name="discard">Discard</string>
 </resources>
