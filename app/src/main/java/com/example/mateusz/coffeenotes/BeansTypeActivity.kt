@@ -12,11 +12,8 @@ class BeansTypeActivity : SingleFragmentActivity(), BeansTypeFragment.OnBeansTyp
     override fun createFragment(): Fragment {
         val intent = intent
         val beansTypeId = intent.getSerializableExtra(EXTRA_BEANS_TYPE_ID) as? UUID
-        if (beansTypeId == null) {
-            return BeansTypeFragment.newInstance()
-        } else {
-            return BeansTypeFragment.newInstance(beansTypeId)
-        }
+                ?: return BeansTypeFragment.newInstance()
+        return BeansTypeFragment.newInstance(beansTypeId)
     }
 
     override fun onBeansTypeSaved() {

@@ -20,6 +20,11 @@ class BeansTypeDataManager private constructor() {
         return beansTypeList.firstOrNull { it.id == id }
     }
 
+    fun createBeansType(): BeansType {
+        val newBeansType = BeansType()
+        beansTypeList.add(newBeansType)
+        return newBeansType
+    }
 
     object Holder {
         val INSTANCE = BeansTypeDataManager()

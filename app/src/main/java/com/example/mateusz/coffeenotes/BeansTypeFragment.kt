@@ -10,15 +10,16 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import butterknife.bindView
 
 import java.util.UUID
 
 class BeansTypeFragment : Fragment() {
 
     private var beansType: BeansType? = null
-    private var beansNameEditText: EditText? = null
+    private val beansNameEditText: EditText by bindView(R.id.beans_name_edit_text)
 
-    private var onBeansTypeEditFinishedListener: OnBeansTypeEditFinishedListener? = null
+    private lateinit var onBeansTypeEditFinishedListener: OnBeansTypeEditFinishedListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +35,6 @@ class BeansTypeFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_beans_type, container, false)
 
-        createBeansNameEditText(view)
-
         updateUi()
 
         return view
@@ -44,7 +43,7 @@ class BeansTypeFragment : Fragment() {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         try {
-            onBeansTypeEditFinishedListener = context as OnBeansTypeEditFinishedListener?
+            onBeansTypeEditFinishedListener = context as OnBeansTypeEditFinishedListener
         } catch (e: ClassCastException) {
             throw RuntimeException(
                     String.format(
@@ -61,15 +60,15 @@ class BeansTypeFragment : Fragment() {
         inflater!!.inflate(R.menu.fragment_beans_type_menu, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.menu_item_save_beans_type -> {
-                saveBeansType()
-                onBeansTypeEditFinishedListener!!.onBeansTypeSaved()
+                onSaveBeansType()
+                onBeansTypeEditFinishedListener.onBeansTypeSaved()
                 return true
             }
             R.id.menu_item_discard_beans_type -> {
-                onBeansTypeEditFinishedListener!!.onBeansTypeDiscarded()
+                onBeansTypeEditFinishedListener.onBeansTypeDiscarded()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -82,21 +81,16 @@ class BeansTypeFragment : Fragment() {
         fun onBeansTypeDiscarded()
     }
 
-    private fun saveBeansType() {
+    private fun onSaveBeansType() {
         if (beansType == null) {
-            beansType = BeansType()
-            BeansTypeDataManager.instance.beansTypeList.add(beansType!!)
+            beansType = BeansTypeDataManager.instance.createBeansType()
         }
-        beansType!!.name = beansNameEditText!!.text.toString()
-    }
-
-    private fun createBeansNameEditText(parentView: View) {
-        beansNameEditText = parentView.findViewById(R.id.beans_name_edit_text) as EditText
+        beansType!!.name = beansNameEditText.text.toString()
     }
 
     private fun updateUi() {
         if (beansType != null) {
-            beansNameEditText!!.setText(beansType!!.name)
+            beansNameEditText.setText(beansType!!.name)
         }
     }
 
