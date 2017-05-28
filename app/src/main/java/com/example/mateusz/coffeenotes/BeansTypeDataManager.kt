@@ -8,7 +8,7 @@ class BeansTypeDataManager private constructor() {
     var beansTypeList: MutableList<BeansType> = ArrayList()
 
     init {
-        for (i in 0..9) {
+        for (i in 0..20) {
             val beansType = BeansType()
             beansType.name = "Type #" + Integer.toString(i)
             beansType.country = "Country #" + Integer.toString(i)

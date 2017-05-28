@@ -32,12 +32,12 @@ class BeansTypeFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_beans_type, container, false)
+                              savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_beans_type, container, false)
 
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         updateUi()
-
-        return view
     }
 
     override fun onAttach(context: Context?) {

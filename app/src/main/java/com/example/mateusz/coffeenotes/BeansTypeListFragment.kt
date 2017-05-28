@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -18,12 +17,13 @@ import android.widget.TextView
 import java.util.UUID
 
 import android.app.Activity.RESULT_OK
+import butterknife.bindView
 
 class BeansTypeListFragment : Fragment() {
 
-    private var beansTypesRecyclerView: RecyclerView? = null
+    private val beansTypesRecyclerView: RecyclerView by bindView(R.id.beans_types_recycler_view)
     private var highlightedBeansTypeId: UUID? = null
-    private var onBeansTypeSelectedListener: OnBeansTypeSelectedListener? = null
+    private lateinit var onBeansTypeSelectedListener: OnBeansTypeSelectedListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,25 +37,25 @@ class BeansTypeListFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_beans_type_list, container, false)
+                              savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_beans_type_list, container, false)
 
-        beansTypesRecyclerView = view.findViewById(R.id.beans_types_recycler_view) as RecyclerView
-        beansTypesRecyclerView!!.layoutManager = LinearLayoutManager(context)
-        beansTypesRecyclerView!!.adapter = BeansTypeAdapter(BeansTypeDataManager.instance.beansTypeList)
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        return view
+        beansTypesRecyclerView.layoutManager = LinearLayoutManager(context)
+        beansTypesRecyclerView.adapter = BeansTypeAdapter(BeansTypeDataManager.instance.beansTypeList)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
-            onBeansTypeSelectedListener = context as OnBeansTypeSelectedListener?
+            onBeansTypeSelectedListener = context as OnBeansTypeSelectedListener
         } catch (e: ClassCastException) {
             throw RuntimeException(
                     String.format(
                             "%s must implement %s interface",
-                            context!!.javaClass.simpleName,
+                            context.javaClass.simpleName,
                             OnBeansTypeSelectedListener::class.java.simpleName))
         }
 
@@ -80,13 +80,9 @@ class BeansTypeListFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == EDIT_BEANS_TYPE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                beansTypesRecyclerView!!.adapter.notifyDataSetChanged()
+                beansTypesRecyclerView.adapter.notifyDataSetChanged()
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     interface OnBeansTypeSelectedListener {
@@ -97,10 +93,10 @@ class BeansTypeListFragment : Fragment() {
 
         inner class BeansTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             private val beansNameTextView: TextView = itemView as TextView
-            private var beansType: BeansType? = null
+            private lateinit var beansType: BeansType
 
             init {
-                beansNameTextView.setOnClickListener { onBeansTypeSelectedListener!!.onBeansTypeSelected(beansType!!) }
+                beansNameTextView.setOnClickListener { onBeansTypeSelectedListener.onBeansTypeSelected(beansType) }
             }
 
             fun bindBeansType(beansType: BeansType) {
@@ -109,9 +105,15 @@ class BeansTypeListFragment : Fragment() {
             }
 
             private fun updateViewHolder() {
-                beansNameTextView.text = beansType!!.name
-                if (beansType!!.id == highlightedBeansTypeId) {
+                beansNameTextView.text = beansType.name
+                if (beansType.id == highlightedBeansTypeId) {
                     beansNameTextView.setTypeface(null, Typeface.BOLD)
+                }
+            }
+
+            fun recycle() {
+                if (beansType.id == highlightedBeansTypeId) {
+                    beansNameTextView.setTypeface(null, Typeface.NORMAL)
                 }
             }
         }
@@ -125,6 +127,10 @@ class BeansTypeListFragment : Fragment() {
         override fun onBindViewHolder(
                 holder: BeansTypeAdapter.BeansTypeViewHolder, position: Int) {
             holder.bindBeansType(beansTypesList[position])
+        }
+
+        override fun onViewRecycled(holder: BeansTypeViewHolder?) {
+            holder?.recycle()
         }
 
         override fun getItemCount(): Int {

@@ -16,14 +16,16 @@ import android.widget.Toast
 import java.util.UUID
 
 import android.app.Activity.RESULT_OK
+import butterknife.bindView
 
 class CoffeeNoteFragment : Fragment() {
+    private val SELECT_COFFEE_BEANS_TYPE_REQUEST = 1
 
-    private lateinit var coffeeNote: CoffeeNote
-    private lateinit var coffeeTypeSpinner: Spinner
-    private lateinit var beansTypeCardView: CardView
-    private lateinit var beansNameTextView: TextView
-    private lateinit var beansCountryTextView: TextView
+    private var coffeeNote: CoffeeNote? = null
+    private val coffeeTypeSpinner: Spinner by bindView(R.id.coffee_type_spinner)
+    private val beansTypeCardView: CardView by bindView(R.id.beans_type_card_view)
+    private val beansNameTextView: TextView by bindView(R.id.beans_name_text_view)
+    private val beansCountryTextView: TextView by bindView(R.id.beans_country_text_view)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,17 +33,17 @@ class CoffeeNoteFragment : Fragment() {
         // TODO implement restoring coffee note from saved instance state.
         coffeeNote = CoffeeNote()
         // TODO remove this.
-        coffeeNote.beansType = BeansTypeDataManager.instance.beansTypeList[2]
+        coffeeNote!!.beansType = BeansTypeDataManager.instance.beansTypeList[2]
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_coffee_note, container, false)
+                              savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_coffee_note, container, false)
 
-        createCoffeeTypeSpinner(view)
-        createBeansTypeCardView(view)
-
-        return view
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initCoffeeTypeSpinner()
+        initBeansTypeCardView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -49,14 +51,13 @@ class CoffeeNoteFragment : Fragment() {
             if (resultCode == RESULT_OK && data != null) {
                 val selectedBeansTypeId = data.getSerializableExtra(BeansTypeListActivity.EXTRA_SELECTED_BEANS_TYPE_ID) as UUID
                 val selectedBeansType = BeansTypeDataManager.instance.getBeansTypeById(selectedBeansTypeId)
-                coffeeNote.beansType = selectedBeansType
+                coffeeNote!!.beansType = selectedBeansType
                 updateBeansTypeCardViewUi()
             }
         }
     }
 
-    private fun createCoffeeTypeSpinner(parentView: View) {
-        coffeeTypeSpinner = parentView.findViewById(R.id.coffee_type_spinner) as Spinner
+    private fun initCoffeeTypeSpinner() {
         val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, CoffeeType.values())
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         coffeeTypeSpinner.adapter = adapter
@@ -64,7 +65,7 @@ class CoffeeNoteFragment : Fragment() {
         coffeeTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val coffeeType = parent.getItemAtPosition(position) as CoffeeType
-                coffeeNote.setCoffeeType(coffeeType)
+                coffeeNote!!.coffeeType = coffeeType
                 Toast.makeText(context, coffeeType.toString(), Toast.LENGTH_SHORT).show()
             }
 
@@ -72,25 +73,21 @@ class CoffeeNoteFragment : Fragment() {
         }
     }
 
-    private fun createBeansTypeCardView(parentView: View) {
-        beansTypeCardView = parentView.findViewById(R.id.beans_type_card_view) as CardView
+    private fun initBeansTypeCardView() {
         beansTypeCardView.setOnClickListener {
-            val intent = BeansTypeListActivity.newIntent(context, coffeeNote.beansType!!.id!!)
+            val intent = BeansTypeListActivity.newIntent(context, coffeeNote!!.beansType!!.id)
             startActivityForResult(intent, SELECT_COFFEE_BEANS_TYPE_REQUEST)
         }
 
-        beansNameTextView = parentView.findViewById(R.id.beans_name_text_view) as TextView
-        beansCountryTextView = parentView.findViewById(R.id.beans_country_text_view) as TextView
         updateBeansTypeCardViewUi()
     }
 
     private fun updateBeansTypeCardViewUi() {
-        beansNameTextView.text = coffeeNote.beansType!!.name
-        beansCountryTextView.text = coffeeNote.beansType!!.country
+        beansNameTextView.text = coffeeNote!!.beansType!!.name
+        beansCountryTextView.text = coffeeNote!!.beansType!!.country
     }
 
     companion object {
-        private val SELECT_COFFEE_BEANS_TYPE_REQUEST = 1
 
         fun newInstance(): CoffeeNoteFragment {
             return CoffeeNoteFragment()
