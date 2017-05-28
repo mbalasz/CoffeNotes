@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -19,7 +18,7 @@ import java.util.UUID
 import android.app.Activity.RESULT_OK
 import butterknife.bindView
 
-class BeansTypeListFragment : Fragment() {
+class BeansTypeListFragment : ListenableFragment() {
 
     private val beansTypesRecyclerView: RecyclerView by bindView(R.id.beans_types_recycler_view)
     private var highlightedBeansTypeId: UUID? = null
@@ -36,9 +35,9 @@ class BeansTypeListFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_beans_type_list, container, false)
+            inflater!!.inflate(R.layout.fragment_beans_type_list, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,23 +46,19 @@ class BeansTypeListFragment : Fragment() {
         beansTypesRecyclerView.adapter = BeansTypeAdapter(BeansTypeDataManager.instance.beansTypeList)
     }
 
-    override fun onAttach(context: Context) {
+    override fun onAttach(context: Context?) {
         super.onAttach(context)
         try {
             onBeansTypeSelectedListener = context as OnBeansTypeSelectedListener
         } catch (e: ClassCastException) {
-            throw RuntimeException(
-                    String.format(
-                            "%s must implement %s interface",
-                            context.javaClass.simpleName,
-                            OnBeansTypeSelectedListener::class.java.simpleName))
+            onNonListenerContextAttached(context)
         }
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.fragment_beans_type_list_menu, menu)
+        inflater!!.inflate(R.menu.fragment_beans_type_list_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

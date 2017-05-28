@@ -12,8 +12,10 @@ class BeansTypeListActivity : SingleFragmentActivity(), BeansTypeListFragment.On
     override fun createFragment(): Fragment {
         val intent = intent
         if (intent.hasExtra(EXTRA_HIGHLIGHTED_BEANS_TYPE_ID)) {
-            val selectedBeansTypeId = getIntent().getSerializableExtra(EXTRA_HIGHLIGHTED_BEANS_TYPE_ID) as UUID
-            return BeansTypeListFragment.newInstance(selectedBeansTypeId)
+            val selectedBeansTypeId = getIntent().getSerializableExtra(EXTRA_HIGHLIGHTED_BEANS_TYPE_ID) as UUID?
+            selectedBeansTypeId?.let {
+                return BeansTypeListFragment.newInstance(selectedBeansTypeId)
+            }
         }
         return BeansTypeListFragment.newInstance()
     }
@@ -29,7 +31,7 @@ class BeansTypeListActivity : SingleFragmentActivity(), BeansTypeListFragment.On
         val EXTRA_SELECTED_BEANS_TYPE_ID = "selected_beans_type_id"
         private val EXTRA_HIGHLIGHTED_BEANS_TYPE_ID = "highlighted_beans_type_id"
 
-        fun newIntent(packageContext: Context, selectedBeansTypeId: UUID): Intent {
+        fun newIntent(packageContext: Context, selectedBeansTypeId: UUID?): Intent {
             val intent = Intent(packageContext, BeansTypeListActivity::class.java)
             intent.putExtra(EXTRA_HIGHLIGHTED_BEANS_TYPE_ID, selectedBeansTypeId)
             return intent

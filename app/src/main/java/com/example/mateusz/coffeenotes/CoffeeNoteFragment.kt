@@ -33,7 +33,7 @@ class CoffeeNoteFragment : Fragment() {
         // TODO implement restoring coffee note from saved instance state.
         coffeeNote = CoffeeNote()
         // TODO remove this.
-        coffeeNote!!.beansType = BeansTypeDataManager.instance.beansTypeList[2]
+        coffeeNote?.beansType = BeansTypeDataManager.instance.beansTypeList[2]
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +51,7 @@ class CoffeeNoteFragment : Fragment() {
             if (resultCode == RESULT_OK && data != null) {
                 val selectedBeansTypeId = data.getSerializableExtra(BeansTypeListActivity.EXTRA_SELECTED_BEANS_TYPE_ID) as UUID
                 val selectedBeansType = BeansTypeDataManager.instance.getBeansTypeById(selectedBeansTypeId)
-                coffeeNote!!.beansType = selectedBeansType
+                coffeeNote?.beansType = selectedBeansType
                 updateBeansTypeCardViewUi()
             }
         }
@@ -65,7 +65,7 @@ class CoffeeNoteFragment : Fragment() {
         coffeeTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val coffeeType = parent.getItemAtPosition(position) as CoffeeType
-                coffeeNote!!.coffeeType = coffeeType
+                coffeeNote?.coffeeType = coffeeType
                 Toast.makeText(context, coffeeType.toString(), Toast.LENGTH_SHORT).show()
             }
 
@@ -75,7 +75,7 @@ class CoffeeNoteFragment : Fragment() {
 
     private fun initBeansTypeCardView() {
         beansTypeCardView.setOnClickListener {
-            val intent = BeansTypeListActivity.newIntent(context, coffeeNote!!.beansType!!.id)
+            val intent = BeansTypeListActivity.newIntent(context, coffeeNote?.beansType?.id)
             startActivityForResult(intent, SELECT_COFFEE_BEANS_TYPE_REQUEST)
         }
 
@@ -83,8 +83,10 @@ class CoffeeNoteFragment : Fragment() {
     }
 
     private fun updateBeansTypeCardViewUi() {
-        beansNameTextView.text = coffeeNote!!.beansType!!.name
-        beansCountryTextView.text = coffeeNote!!.beansType!!.country
+        coffeeNote?.beansType?.let {
+            beansNameTextView.text = it.name
+            beansCountryTextView.text = it.country
+        }
     }
 
     companion object {

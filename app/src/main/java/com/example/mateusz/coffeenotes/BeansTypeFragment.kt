@@ -2,7 +2,6 @@ package com.example.mateusz.coffeenotes
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -14,7 +13,7 @@ import butterknife.bindView
 
 import java.util.UUID
 
-class BeansTypeFragment : Fragment() {
+class BeansTypeFragment : ListenableFragment() {
 
     private var beansType: BeansType? = null
     private val beansNameEditText: EditText by bindView(R.id.beans_name_edit_text)
@@ -31,9 +30,9 @@ class BeansTypeFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_beans_type, container, false)
+            inflater!!.inflate(R.layout.fragment_beans_type, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,19 +44,14 @@ class BeansTypeFragment : Fragment() {
         try {
             onBeansTypeEditFinishedListener = context as OnBeansTypeEditFinishedListener
         } catch (e: ClassCastException) {
-            throw RuntimeException(
-                    String.format(
-                            "%s has to implement %s interface",
-                            context!!.javaClass.simpleName,
-                            OnBeansTypeEditFinishedListener::class.java.simpleName))
-
+            onNonListenerContextAttached(context)
         }
 
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater!!.inflate(R.menu.fragment_beans_type_menu, menu)
+        inflater?.inflate(R.menu.fragment_beans_type_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -85,12 +79,12 @@ class BeansTypeFragment : Fragment() {
         if (beansType == null) {
             beansType = BeansTypeDataManager.instance.createBeansType()
         }
-        beansType!!.name = beansNameEditText.text.toString()
+        beansType?.name = beansNameEditText.text.toString()
     }
 
     private fun updateUi() {
-        if (beansType != null) {
-            beansNameEditText.setText(beansType!!.name)
+        beansType?.let {
+            beansNameEditText.setText(it.name)
         }
     }
 
