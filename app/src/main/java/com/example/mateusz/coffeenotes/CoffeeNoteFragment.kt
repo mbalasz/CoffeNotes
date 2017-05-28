@@ -49,8 +49,11 @@ class CoffeeNoteFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == SELECT_COFFEE_BEANS_TYPE_REQUEST) {
             if (resultCode == RESULT_OK && data != null) {
-                val selectedBeansTypeId = data.getSerializableExtra(BeansTypeListActivity.EXTRA_SELECTED_BEANS_TYPE_ID) as UUID
-                val selectedBeansType = BeansTypeDataManager.instance.getBeansTypeById(selectedBeansTypeId)
+                val selectedBeansTypeId =
+                        data.getSerializableExtra(
+                                BeansTypeListActivity.EXTRA_SELECTED_BEANS_TYPE_ID) as UUID
+                val selectedBeansType =
+                        BeansTypeDataManager.instance.getBeansTypeById(selectedBeansTypeId)
                 coffeeNote?.beansType = selectedBeansType
                 updateBeansTypeCardViewUi()
             }
@@ -58,12 +61,14 @@ class CoffeeNoteFragment : Fragment() {
     }
 
     private fun initCoffeeTypeSpinner() {
-        val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, CoffeeType.values())
+        val adapter =
+                ArrayAdapter(context, android.R.layout.simple_spinner_item, CoffeeType.values())
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         coffeeTypeSpinner.adapter = adapter
 
         coffeeTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+            override fun onItemSelected(
+                    parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val coffeeType = parent.getItemAtPosition(position) as CoffeeType
                 coffeeNote?.coffeeType = coffeeType
                 Toast.makeText(context, coffeeType.toString(), Toast.LENGTH_SHORT).show()

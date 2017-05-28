@@ -43,7 +43,8 @@ class BeansTypeListFragment : ListenableFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         beansTypesRecyclerView.layoutManager = LinearLayoutManager(context)
-        beansTypesRecyclerView.adapter = BeansTypeAdapter(BeansTypeDataManager.instance.beansTypeList)
+        beansTypesRecyclerView.adapter =
+                BeansTypeAdapter(BeansTypeDataManager.instance.beansTypeList)
     }
 
     override fun onAttach(context: Context?) {
@@ -84,14 +85,17 @@ class BeansTypeListFragment : ListenableFragment() {
         fun onBeansTypeSelected(beansType: BeansType)
     }
 
-    private inner class BeansTypeAdapter(private val beansTypesList: List<BeansType>) : RecyclerView.Adapter<BeansTypeAdapter.BeansTypeViewHolder>() {
+    private inner class BeansTypeAdapter(private val beansTypesList: List<BeansType>)
+        : RecyclerView.Adapter<BeansTypeAdapter.BeansTypeViewHolder>() {
 
         inner class BeansTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             private val beansNameTextView: TextView = itemView as TextView
             private lateinit var beansType: BeansType
 
             init {
-                beansNameTextView.setOnClickListener { onBeansTypeSelectedListener.onBeansTypeSelected(beansType) }
+                beansNameTextView.setOnClickListener {
+                    onBeansTypeSelectedListener.onBeansTypeSelected(beansType)
+                }
             }
 
             fun bindBeansType(beansType: BeansType) {
@@ -113,7 +117,8 @@ class BeansTypeListFragment : ListenableFragment() {
             }
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BeansTypeAdapter.BeansTypeViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
+                BeansTypeAdapter.BeansTypeViewHolder {
             val inflater = LayoutInflater.from(context)
             val view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false)
             return BeansTypeViewHolder(view)

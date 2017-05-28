@@ -7,7 +7,8 @@ import android.support.v4.app.Fragment
 
 import java.util.UUID
 
-class BeansTypeActivity : SingleFragmentActivity(), BeansTypeFragment.OnBeansTypeEditFinishedListener {
+class BeansTypeActivity
+    : SingleFragmentActivity(), BeansTypeFragment.OnBeansTypeEditFinishedListener {
 
     override fun createFragment(): Fragment {
         val intent = intent

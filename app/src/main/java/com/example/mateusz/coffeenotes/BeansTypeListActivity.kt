@@ -7,12 +7,14 @@ import android.support.v4.app.Fragment
 
 import java.util.UUID
 
-class BeansTypeListActivity : SingleFragmentActivity(), BeansTypeListFragment.OnBeansTypeSelectedListener {
+class BeansTypeListActivity
+    : SingleFragmentActivity(), BeansTypeListFragment.OnBeansTypeSelectedListener {
 
     override fun createFragment(): Fragment {
         val intent = intent
         if (intent.hasExtra(EXTRA_HIGHLIGHTED_BEANS_TYPE_ID)) {
-            val selectedBeansTypeId = getIntent().getSerializableExtra(EXTRA_HIGHLIGHTED_BEANS_TYPE_ID) as UUID?
+            val selectedBeansTypeId =
+                    getIntent().getSerializableExtra(EXTRA_HIGHLIGHTED_BEANS_TYPE_ID) as UUID?
             selectedBeansTypeId?.let {
                 return BeansTypeListFragment.newInstance(selectedBeansTypeId)
             }

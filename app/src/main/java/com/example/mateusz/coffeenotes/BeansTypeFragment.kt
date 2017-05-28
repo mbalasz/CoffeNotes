@@ -99,7 +99,7 @@ class BeansTypeFragment : ListenableFragment() {
             return fragment
         }
 
-        fun newInstance() : BeansTypeFragment {
+        fun newInstance(): BeansTypeFragment {
             return BeansTypeFragment()
         }
     }
