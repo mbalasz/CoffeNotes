@@ -9,5 +9,7 @@
     </string-array>
     <string name="new_beans_type">New beans</string>
     <string name="save">Save</string>
+    <string name="done">Done</string>
     <string name="discard">Discard</string>
+    <string name="edit_beans_type_list">Edit</string>
 </resources>

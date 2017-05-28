@@ -20,8 +20,11 @@ import butterknife.bindView
 
 class BeansTypeListFragment : ListenableFragment() {
 
+    private lateinit var menu: Menu
+
     private val beansTypesRecyclerView: RecyclerView by bindView(R.id.beans_types_recycler_view)
     private var highlightedBeansTypeId: UUID? = null
+
     private lateinit var onBeansTypeSelectedListener: OnBeansTypeSelectedListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,13 +63,22 @@ class BeansTypeListFragment : ListenableFragment() {
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater!!.inflate(R.menu.fragment_beans_type_list_menu, menu)
+        this.menu = menu!!
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_item_new_beans_type -> {
+            R.id.menu_item_beans_type_list_new_beans_type -> {
                 val intent = BeansTypeActivity.newIntent(context)
                 startActivityForResult(intent, EDIT_BEANS_TYPE_REQUEST)
+                return true
+            }
+            R.id.menu_item_beans_type_list_start_edit -> {
+                setEditMode(true)
+                return true
+            }
+            R.id.menu_item_beans_type_list_finish_edit -> {
+                setEditMode(false)
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -83,6 +95,12 @@ class BeansTypeListFragment : ListenableFragment() {
 
     interface OnBeansTypeSelectedListener {
         fun onBeansTypeSelected(beansType: BeansType)
+    }
+
+    private fun setEditMode(enabled: Boolean) {
+        menu.findItem(R.id.menu_item_beans_type_list_start_edit).isVisible = !enabled
+        menu.findItem(R.id.menu_item_beans_type_list_finish_edit).isVisible = enabled
+        menu.findItem(R.id.menu_item_beans_type_list_new_beans_type).isVisible = enabled
     }
 
     private inner class BeansTypeAdapter(private val beansTypesList: List<BeansType>)

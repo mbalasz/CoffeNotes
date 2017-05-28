@@ -2,11 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_item_new_beans_type"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="@string/new_beans_type"
+        android:id="@+id/menu_item_beans_type_list_start_edit"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/edit_beans_type_list"
         app:showAsAction="ifRoom|withText">
 
+    </item>
+
+    <item
+        android:id="@+id/menu_item_beans_type_list_finish_edit"
+        android:icon="@drawable/ic_menu_save"
+        android:title="@string/done"
+        android:visible="false"
+        app:showAsAction="ifRoom|withText">
+    </item>
+
+    <item
+        android:id="@+id/menu_item_beans_type_list_new_beans_type"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/new_beans_type"
+        android:visible="false"
+        app:showAsAction="ifRoom|withText">
     </item>
 
 </menu>
