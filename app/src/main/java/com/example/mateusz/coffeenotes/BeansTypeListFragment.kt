@@ -16,6 +16,8 @@ import android.widget.TextView
 import java.util.UUID
 
 import android.app.Activity.RESULT_OK
+import android.support.v7.widget.DividerItemDecoration
+import android.widget.ImageButton
 import butterknife.bindView
 
 class BeansTypeListFragment : ListenableFragment() {
@@ -45,9 +47,12 @@ class BeansTypeListFragment : ListenableFragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        beansTypesRecyclerView.layoutManager = LinearLayoutManager(context)
+        val layoutManager = LinearLayoutManager(context)
+        beansTypesRecyclerView.layoutManager = layoutManager
         beansTypesRecyclerView.adapter =
                 BeansTypeAdapter(BeansTypeDataManager.instance.beansTypeList)
+        val dividerItemDecoration = DividerItemDecoration(context, layoutManager.orientation)
+        beansTypesRecyclerView.addItemDecoration(dividerItemDecoration)
     }
 
     override fun onAttach(context: Context?) {
@@ -107,11 +112,16 @@ class BeansTypeListFragment : ListenableFragment() {
         : RecyclerView.Adapter<BeansTypeAdapter.BeansTypeViewHolder>() {
 
         inner class BeansTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            private val beansNameTextView: TextView = itemView as TextView
+            private val beansNameTextView: TextView =
+                    itemView.findViewById(R.id.item_beans_type_row_name_text_view) as TextView
+            private val beansCountryTextView: TextView =
+                    itemView.findViewById(R.id.item_beans_type_row_country_text_view) as TextView
+            private val removeButton: ImageButton =
+                    itemView.findViewById(R.id.item_beans_type_row_remove_button) as ImageButton
             private lateinit var beansType: BeansType
 
             init {
-                beansNameTextView.setOnClickListener {
+                itemView.setOnClickListener {
                     onBeansTypeSelectedListener.onBeansTypeSelected(beansType)
                 }
             }
@@ -123,6 +133,7 @@ class BeansTypeListFragment : ListenableFragment() {
 
             private fun updateViewHolder() {
                 beansNameTextView.text = beansType.name
+                beansCountryTextView.text = beansType.country
                 if (beansType.id == highlightedBeansTypeId) {
                     beansNameTextView.setTypeface(null, Typeface.BOLD)
                 }
@@ -138,7 +149,7 @@ class BeansTypeListFragment : ListenableFragment() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
                 BeansTypeAdapter.BeansTypeViewHolder {
             val inflater = LayoutInflater.from(context)
-            val view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false)
+            val view = inflater.inflate(R.layout.item_beans_type_row, parent, false)
             return BeansTypeViewHolder(view)
         }
 

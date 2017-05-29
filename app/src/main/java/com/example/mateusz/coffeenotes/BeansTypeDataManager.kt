@@ -11,7 +11,9 @@ class BeansTypeDataManager private constructor() {
         for (i in 0..20) {
             val beansType = BeansType()
             beansType.name = "Type #" + Integer.toString(i)
-            beansType.country = "Country #" + Integer.toString(i)
+            if (i % 2 == 0) {
+                beansType.country = "Country #" + Integer.toString(i)
+            }
             beansTypeList.add(beansType)
         }
     }

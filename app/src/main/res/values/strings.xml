@@ -12,4 +12,5 @@
     <string name="done">Done</string>
     <string name="discard">Discard</string>
     <string name="edit_beans_type_list">Edit</string>
+    <string name="remove">Remove</string>
 </resources>
