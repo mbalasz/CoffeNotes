@@ -16,6 +16,7 @@ import android.widget.TextView
 import java.util.UUID
 
 import android.app.Activity.RESULT_OK
+import android.opengl.Visibility
 import android.support.v7.widget.DividerItemDecoration
 import android.widget.ImageButton
 import butterknife.bindView
@@ -23,6 +24,7 @@ import butterknife.bindView
 class BeansTypeListFragment : ListenableFragment() {
 
     private lateinit var menu: Menu
+    private var isInEditMode = false
 
     private val beansTypesRecyclerView: RecyclerView by bindView(R.id.beans_types_recycler_view)
     private var highlightedBeansTypeId: UUID? = null
@@ -76,6 +78,7 @@ class BeansTypeListFragment : ListenableFragment() {
             R.id.menu_item_beans_type_list_new_beans_type -> {
                 val intent = BeansTypeActivity.newIntent(context)
                 startActivityForResult(intent, EDIT_BEANS_TYPE_REQUEST)
+                setEditMode(false)
                 return true
             }
             R.id.menu_item_beans_type_list_start_edit -> {
@@ -103,12 +106,14 @@ class BeansTypeListFragment : ListenableFragment() {
     }
 
     private fun setEditMode(enabled: Boolean) {
+        isInEditMode = enabled
         menu.findItem(R.id.menu_item_beans_type_list_start_edit).isVisible = !enabled
         menu.findItem(R.id.menu_item_beans_type_list_finish_edit).isVisible = enabled
         menu.findItem(R.id.menu_item_beans_type_list_new_beans_type).isVisible = enabled
+        beansTypesRecyclerView.adapter.notifyDataSetChanged()
     }
 
-    private inner class BeansTypeAdapter(private val beansTypesList: List<BeansType>)
+    private inner class BeansTypeAdapter(private val beansTypesList: MutableList<BeansType>)
         : RecyclerView.Adapter<BeansTypeAdapter.BeansTypeViewHolder>() {
 
         inner class BeansTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -124,6 +129,10 @@ class BeansTypeListFragment : ListenableFragment() {
                 itemView.setOnClickListener {
                     onBeansTypeSelectedListener.onBeansTypeSelected(beansType)
                 }
+                removeButton.setOnClickListener {
+                    beansTypesList.removeAt(adapterPosition)
+                    notifyDataSetChanged()
+                }
             }
 
             fun bindBeansType(beansType: BeansType) {
@@ -137,6 +146,7 @@ class BeansTypeListFragment : ListenableFragment() {
                 if (beansType.id == highlightedBeansTypeId) {
                     beansNameTextView.setTypeface(null, Typeface.BOLD)
                 }
+                removeButton.visibility = if (isInEditMode) View.VISIBLE else View.INVISIBLE
             }
 
             fun recycle() {
