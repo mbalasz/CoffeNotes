@@ -16,7 +16,6 @@ import android.widget.TextView
 import java.util.UUID
 
 import android.app.Activity.RESULT_OK
-import android.opengl.Visibility
 import android.support.v7.widget.DividerItemDecoration
 import android.widget.ImageButton
 import butterknife.bindView
