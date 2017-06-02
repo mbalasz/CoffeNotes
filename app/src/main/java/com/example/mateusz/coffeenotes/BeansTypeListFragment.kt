@@ -126,7 +126,7 @@ class BeansTypeListFragment : ListenableFragment() {
 
             init {
                 itemView.setOnClickListener {
-                    onBeansTypeSelectedListener.onBeansTypeSelected(beansType)
+                    onRowClicked()
                 }
                 removeButton.setOnClickListener {
                     beansTypesList.removeAt(adapterPosition)
@@ -137,6 +137,15 @@ class BeansTypeListFragment : ListenableFragment() {
             fun bindBeansType(beansType: BeansType) {
                 this.beansType = beansType
                 updateViewHolder()
+            }
+
+            private fun onRowClicked() {
+                if (!isInEditMode) {
+                    onBeansTypeSelectedListener.onBeansTypeSelected(beansType)
+                } else {
+                    val intent = BeansTypeActivity.newIntent(context, beansType.id)
+                    startActivityForResult(intent, EDIT_BEANS_TYPE_REQUEST)
+                }
             }
 
             private fun updateViewHolder() {
