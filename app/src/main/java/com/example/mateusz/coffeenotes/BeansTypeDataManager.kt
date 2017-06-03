@@ -22,10 +22,10 @@ class BeansTypeDataManager private constructor() {
         return beansTypeList.firstOrNull { it.id == id }
     }
 
-    fun createBeansType(): BeansType {
-        val newBeansType = BeansType()
-        beansTypeList.add(newBeansType)
-        return newBeansType
+    fun saveBeansType(beansType: BeansType) {
+        if (getBeansTypeById(beansType.id) == null) {
+            beansTypeList.add(beansType)
+        }
     }
 
     object Holder {

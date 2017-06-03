@@ -1,22 +1,27 @@
 package com.example.mateusz.coffeenotes
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import butterknife.bindView
 
 import java.util.UUID
 
 class BeansTypeFragment : ListenableFragment() {
-
-    private var beansType: BeansType? = null
+    private lateinit var beansType: BeansType
     private val beansNameEditText: EditText by bindView(R.id.beans_name_edit_text)
+    private val roastLevelButton: Button by bindView(R.id.roast_level_button)
 
     private lateinit var onBeansTypeEditFinishedListener: OnBeansTypeEditFinishedListener
 
@@ -25,7 +30,9 @@ class BeansTypeFragment : ListenableFragment() {
         val args = arguments
         if (args != null) {
             val beansTypeId = arguments.getSerializable(ARG_BEANS_TYPE_ID) as UUID
-            beansType = BeansTypeDataManager.instance.getBeansTypeById(beansTypeId)
+            beansType = BeansTypeDataManager.instance.getBeansTypeById(beansTypeId) ?: BeansType()
+        } else {
+            beansType = BeansType()
         }
         setHasOptionsMenu(true)
     }
@@ -36,6 +43,11 @@ class BeansTypeFragment : ListenableFragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        roastLevelButton.setOnClickListener {
+            val roastPickerFragment = RoastPickerFragment.newInstance(beansType.roastLevel)
+            roastPickerFragment.setTargetFragment(this@BeansTypeFragment, REQUEST_ROAST_PICKER)
+            roastPickerFragment.show(fragmentManager, TAG_DIALOG_ROAST_PICKER)
+        }
         updateUi()
     }
 
@@ -69,27 +81,42 @@ class BeansTypeFragment : ListenableFragment() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode != Activity.RESULT_OK) {
+            return
+        }
+
+        when (requestCode) {
+            REQUEST_ROAST_PICKER -> {
+                data?.let {
+                    roastLevelButton.text =
+                            data.getIntExtra(RoastPickerFragment.EXTRA_ROAST_LEVEL, 0).toString()
+                }
+            }
+        }
+    }
+
+    private fun onSaveBeansType() {
+        beansType.name = beansNameEditText.text.toString()
+        beansType.roastLevel = roastLevelButton.text.toString().toInt()
+        BeansTypeDataManager.instance.saveBeansType(beansType)
+    }
+
+    private fun updateUi() {
+        beansNameEditText.setText(beansType.name)
+        roastLevelButton.text = beansType.roastLevel.toString()
+    }
+
     internal interface OnBeansTypeEditFinishedListener {
         fun onBeansTypeSaved()
 
         fun onBeansTypeDiscarded()
     }
 
-    private fun onSaveBeansType() {
-        if (beansType == null) {
-            beansType = BeansTypeDataManager.instance.createBeansType()
-        }
-        beansType?.name = beansNameEditText.text.toString()
-    }
-
-    private fun updateUi() {
-        beansType?.let {
-            beansNameEditText.setText(it.name)
-        }
-    }
-
     companion object {
         private val ARG_BEANS_TYPE_ID = "beans_type_id"
+        private val TAG_DIALOG_ROAST_PICKER = "DialogRoastPicker"
+        private val REQUEST_ROAST_PICKER = 0
 
         fun newInstance(beansTypeId: UUID): BeansTypeFragment {
             val args = Bundle()

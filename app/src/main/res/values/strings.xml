@@ -13,4 +13,10 @@
     <string name="discard">Discard</string>
     <string name="edit_beans_type_list">Edit</string>
     <string name="remove">Remove</string>
+    <string name="beans_name_label">Name</string>
+    <string name="beans_country_label">Country</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="roast_picker_label">Select roast level</string>
+    <string name="roast_level_title">Roast level</string>
 </resources>
