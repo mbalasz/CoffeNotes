@@ -25,6 +25,7 @@ class RoastPickerFragment : DialogFragment() {
         numberPicker = view.findViewById(R.id.roast_number_picker) as NumberPicker
         numberPicker.minValue = MIN_ROAST_VALUE
         numberPicker.maxValue = MAX_ROAST_VALUE
+        numberPicker.value = arguments.getInt(ARG_ROAST_LEVEL)
         numberPicker.displayedValues = Array(MAX_ROAST_VALUE, { i -> (i + 1).toString()})
 
         return AlertDialog.Builder(context)
