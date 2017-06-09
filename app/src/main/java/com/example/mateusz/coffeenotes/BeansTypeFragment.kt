@@ -30,7 +30,9 @@ class BeansTypeFragment : ListenableFragment() {
         val args = arguments
         if (args != null) {
             val beansTypeId = arguments.getSerializable(ARG_BEANS_TYPE_ID) as UUID
-            beansType = BeansTypeDataManager.instance.getBeansTypeById(beansTypeId) ?: BeansType()
+            beansType =
+                    BeansTypeDataManager.instance(context)
+                            .getBeansTypeById(beansTypeId) ?: BeansType()
         } else {
             beansType = BeansType()
         }
@@ -99,7 +101,7 @@ class BeansTypeFragment : ListenableFragment() {
     private fun onSaveBeansType() {
         beansType.name = beansNameEditText.text.toString()
         beansType.roastLevel = roastLevelButton.text.toString().toInt()
-        BeansTypeDataManager.instance.saveBeansType(beansType)
+        BeansTypeDataManager.instance(context).saveBeansType(beansType)
     }
 
     private fun updateUi() {

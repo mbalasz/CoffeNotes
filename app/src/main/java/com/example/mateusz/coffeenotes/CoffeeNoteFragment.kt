@@ -33,7 +33,7 @@ class CoffeeNoteFragment : Fragment() {
         // TODO implement restoring coffee note from saved instance state.
         coffeeNote = CoffeeNote()
         // TODO remove this.
-        coffeeNote?.beansType = BeansTypeDataManager.instance.beansTypeList[2]
+//        coffeeNote?.beansType = BeansTypeDataManager.instance(context).getBeansTypeList()[2]
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +53,7 @@ class CoffeeNoteFragment : Fragment() {
                         data.getSerializableExtra(
                                 BeansTypeListActivity.EXTRA_SELECTED_BEANS_TYPE_ID) as UUID
                 val selectedBeansType =
-                        BeansTypeDataManager.instance.getBeansTypeById(selectedBeansTypeId)
+                        BeansTypeDataManager.instance(context).getBeansTypeById(selectedBeansTypeId)
                 coffeeNote?.beansType = selectedBeansType
                 updateBeansTypeCardViewUi()
             }

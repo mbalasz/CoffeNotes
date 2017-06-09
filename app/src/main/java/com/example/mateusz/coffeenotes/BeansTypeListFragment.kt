@@ -25,7 +25,12 @@ class BeansTypeListFragment : ListenableFragment() {
     private lateinit var menu: Menu
     private var isInEditMode = false
 
+    private val beansTypeDataManager: BeansTypeDataManager by lazy {
+        BeansTypeDataManager.instance(context)
+    }
+
     private val beansTypesRecyclerView: RecyclerView by bindView(R.id.beans_types_recycler_view)
+    private lateinit var beansTypeAdapter: BeansTypeAdapter
     private var highlightedBeansTypeId: UUID? = null
 
     private lateinit var onBeansTypeSelectedListener: OnBeansTypeSelectedListener
@@ -50,8 +55,8 @@ class BeansTypeListFragment : ListenableFragment() {
 
         val layoutManager = LinearLayoutManager(context)
         beansTypesRecyclerView.layoutManager = layoutManager
-        beansTypesRecyclerView.adapter =
-                BeansTypeAdapter(BeansTypeDataManager.instance.beansTypeList)
+        beansTypeAdapter = BeansTypeAdapter(beansTypeDataManager.getBeansTypeList())
+        beansTypesRecyclerView.adapter = beansTypeAdapter
         val dividerItemDecoration = DividerItemDecoration(context, layoutManager.orientation)
         beansTypesRecyclerView.addItemDecoration(dividerItemDecoration)
     }
@@ -95,7 +100,8 @@ class BeansTypeListFragment : ListenableFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == EDIT_BEANS_TYPE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                beansTypesRecyclerView.adapter.notifyDataSetChanged()
+                beansTypeAdapter.setBeansTypeList(beansTypeDataManager.getBeansTypeList())
+                beansTypeAdapter.notifyDataSetChanged()
             }
         }
     }
@@ -109,10 +115,10 @@ class BeansTypeListFragment : ListenableFragment() {
         menu.findItem(R.id.menu_item_beans_type_list_start_edit).isVisible = !enabled
         menu.findItem(R.id.menu_item_beans_type_list_finish_edit).isVisible = enabled
         menu.findItem(R.id.menu_item_beans_type_list_new_beans_type).isVisible = enabled
-        beansTypesRecyclerView.adapter.notifyDataSetChanged()
+        beansTypeAdapter.notifyDataSetChanged()
     }
 
-    private inner class BeansTypeAdapter(private val beansTypesList: MutableList<BeansType>)
+    private inner class BeansTypeAdapter(private var beansTypesList: List<BeansType>)
         : RecyclerView.Adapter<BeansTypeAdapter.BeansTypeViewHolder>() {
 
         inner class BeansTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -129,8 +135,11 @@ class BeansTypeListFragment : ListenableFragment() {
                     onRowClicked()
                 }
                 removeButton.setOnClickListener {
-                    beansTypesList.removeAt(adapterPosition)
-                    notifyDataSetChanged()
+                    // TODO: remove this tight coupling to the data manager. Create a recyclerView,
+                    // which operates on Cursor instead.
+                    beansTypeDataManager.removeBeansType(beansTypesList[adapterPosition])
+                    setBeansTypeList(beansTypeDataManager.getBeansTypeList())
+                    notifyItemRemoved(adapterPosition)
                 }
             }
 
@@ -162,6 +171,10 @@ class BeansTypeListFragment : ListenableFragment() {
                     beansNameTextView.setTypeface(null, Typeface.NORMAL)
                 }
             }
+        }
+
+        fun setBeansTypeList(beansTypeList: List<BeansType>) {
+            beansTypesList = beansTypeList
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
@@ -202,4 +215,4 @@ class BeansTypeListFragment : ListenableFragment() {
         }
     }
 
-}// Required empty public constructor
+}
