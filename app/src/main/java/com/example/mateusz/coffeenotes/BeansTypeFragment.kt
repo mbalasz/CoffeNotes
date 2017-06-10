@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -21,6 +19,7 @@ import java.util.UUID
 class BeansTypeFragment : ListenableFragment() {
     private lateinit var beansType: BeansType
     private val beansNameEditText: EditText by bindView(R.id.beans_name_edit_text)
+    private val beansCountryEditText: EditText by bindView(R.id.beans_country_edit_text)
     private val roastLevelButton: Button by bindView(R.id.roast_level_button)
 
     private lateinit var onBeansTypeEditFinishedListener: OnBeansTypeEditFinishedListener
@@ -100,6 +99,7 @@ class BeansTypeFragment : ListenableFragment() {
 
     private fun onSaveBeansType() {
         beansType.name = beansNameEditText.text.toString()
+        beansType.country = beansCountryEditText.text.toString()
         beansType.roastLevel = roastLevelButton.text.toString().toInt()
         BeansTypeDataManager.instance(context).saveBeansType(beansType)
     }
