@@ -163,7 +163,11 @@ class BeansTypeFragment : ListenableFragment() {
     }
 
     private fun updateUi() {
+        // TODO change the way of updating the entity. Instead of getting ui snapshot create a tmp
+        // copy of original beanstype and whenever any of the ui elements changes update
+        // corresponding fields in the tmp copy. Upon saving, replace the copy with the original.
         beansNameEditText.setText(beansType.name)
+        beansCountryEditText.setText(beansType.country)
         roastLevelButton.text = beansType.roastLevel.toString()
     }
 
