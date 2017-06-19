@@ -49,14 +49,14 @@
             android:id="@+id/beans_photo_image_view"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:src="@drawable/ic_image"/>
+            android:src="@drawable/ic_image"
+            android:visibility="invisible"/>
         <ProgressBar
             android:id="@+id/beans_photo_progress_bar"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerInParent="true"
-            android:indeterminate="true"
-            android:visibility="gone"/>
+            android:indeterminate="true"/>
     </RelativeLayout>
     <Button
         android:id="@+id/take_photo_button"

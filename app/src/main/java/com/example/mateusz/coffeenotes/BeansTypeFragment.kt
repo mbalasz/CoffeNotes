@@ -24,8 +24,6 @@ import android.os.Build
 import android.view.ViewTreeObserver
 import android.annotation.TargetApi
 
-
-
 class BeansTypeFragment : ListenableFragment() {
     private lateinit var beansType: BeansType
     private val beansNameEditText: EditText by bindView(R.id.beans_name_edit_text)
@@ -67,6 +65,8 @@ class BeansTypeFragment : ListenableFragment() {
         }
         takePhotoButton.setOnClickListener {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            // TODO: Don't override current picture location until save button is clicked.
+            // Instead save new picture in a cached location.
             intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile))
             startActivityForResult(intent, REQUEST_TAKE_PHOTO)
         }
@@ -134,27 +134,32 @@ class BeansTypeFragment : ListenableFragment() {
     }
 
     private fun updatePhotoView() {
-        photoFile?.let {
-            if (it.exists()) {
-                async(UI) {
-                    beansPhotoImageView.visibility = View.INVISIBLE
-                    beansPhotoProgressBar.visibility = View.VISIBLE
-
-                    val asyncGetScaledBitmap = async(CommonPool) {
-                        PictureUtils.getScaledBitmap(
-                                it.path, beansPhotoImageView.width, beansPhotoImageView.height)
-                    }
-                    val bitmap = asyncGetScaledBitmap.await()
-
-                    beansPhotoImageView.setImageBitmap(bitmap)
-                    beansPhotoProgressBar.visibility = View.GONE
-                    beansPhotoImageView.visibility = View.VISIBLE
-
+        onStartUpdatingPhotoView()
+        val photoFile = photoFile
+        if (photoFile != null && photoFile.exists()) {
+            async(UI) {
+                val asyncGetScaledBitmap = async(CommonPool) {
+                    PictureUtils.getScaledBitmap(
+                            photoFile.path, beansPhotoImageView.width, beansPhotoImageView.height)
                 }
-            } else {
-                beansPhotoImageView.setImageResource(R.drawable.ic_image)
+                val bitmap = asyncGetScaledBitmap.await()
+                beansPhotoImageView.setImageBitmap(bitmap)
+                onFinishUpdatingPhotoView()
             }
-        } ?: beansPhotoImageView.setImageResource(R.drawable.ic_image)
+        } else {
+            beansPhotoImageView.setImageResource(R.drawable.ic_image)
+            onFinishUpdatingPhotoView()
+        }
+    }
+
+    private fun onStartUpdatingPhotoView() {
+        beansPhotoImageView.visibility = View.INVISIBLE
+        beansPhotoProgressBar.visibility = View.VISIBLE
+    }
+
+    private fun onFinishUpdatingPhotoView() {
+        beansPhotoProgressBar.visibility = View.GONE
+        beansPhotoImageView.visibility = View.VISIBLE
     }
 
     private fun updateUi() {
