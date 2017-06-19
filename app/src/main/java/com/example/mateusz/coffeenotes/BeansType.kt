@@ -6,5 +6,6 @@ data class BeansType(
     val id: UUID = UUID.randomUUID(),
     var name: String? = null,
     var country: String? = null,
-    var roastLevel: Int = 1
+    var roastLevel: Int = 1,
+    var photoFileName: String = "IMG_$id.jpg"
 )

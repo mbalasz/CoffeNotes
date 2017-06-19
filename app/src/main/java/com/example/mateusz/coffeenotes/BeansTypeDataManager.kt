@@ -2,12 +2,12 @@ package com.example.mateusz.coffeenotes
 
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.widget.CursorAdapter
+import android.os.Environment
 import com.example.mateusz.coffeenotes.database.BeansTypeCursorWrapper
 import com.example.mateusz.coffeenotes.database.BeansTypeDatabaseHelper
 import com.example.mateusz.coffeenotes.database.BeansTypeDbSchema.*
+import java.io.File
 import java.util.ArrayList
 import java.util.UUID
 
@@ -56,6 +56,12 @@ class BeansTypeDataManager private constructor(val context: Context) {
                 BeansTypeTable.NAME,
                 "${BeansTypeTable.Cols.UUID} = ?",
                 arrayOf(beansType.id.toString()))
+    }
+
+    fun getPhotoFile(beansType: BeansType): File {
+        return File(
+                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                beansType.photoFileName)
     }
 
     private fun addBeansType(beansType: BeansType) {

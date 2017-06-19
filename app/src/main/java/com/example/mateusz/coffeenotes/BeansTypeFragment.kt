@@ -3,24 +3,41 @@ package com.example.mateusz.coffeenotes
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.opengl.Visibility
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.provider.MediaStore
+import android.util.Log
+import android.view.*
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.ProgressBar
 import butterknife.bindView
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import java.io.File
 
 import java.util.UUID
+import android.os.Build
+import android.view.ViewTreeObserver
+import android.annotation.TargetApi
+
+
 
 class BeansTypeFragment : ListenableFragment() {
     private lateinit var beansType: BeansType
     private val beansNameEditText: EditText by bindView(R.id.beans_name_edit_text)
     private val beansCountryEditText: EditText by bindView(R.id.beans_country_edit_text)
     private val roastLevelButton: Button by bindView(R.id.roast_level_button)
+    private val beansPhotoImageView: ImageView by bindView(R.id.beans_photo_image_view)
+    private val beansPhotoProgressBar: ProgressBar by bindView(R.id.beans_photo_progress_bar)
+    private val takePhotoButton: Button by bindView(R.id.take_photo_button)
+    private val beansTypeDataManager: BeansTypeDataManager by lazy {
+        BeansTypeDataManager.instance(context)
+    }
+    private var photoFile: File? = null
 
     private lateinit var onBeansTypeEditFinishedListener: OnBeansTypeEditFinishedListener
 
@@ -29,12 +46,11 @@ class BeansTypeFragment : ListenableFragment() {
         val args = arguments
         if (args != null) {
             val beansTypeId = arguments.getSerializable(ARG_BEANS_TYPE_ID) as UUID
-            beansType =
-                    BeansTypeDataManager.instance(context)
-                            .getBeansTypeById(beansTypeId) ?: BeansType()
+            beansType = beansTypeDataManager.getBeansTypeById(beansTypeId) ?: BeansType()
         } else {
             beansType = BeansType()
         }
+        photoFile = beansTypeDataManager.getPhotoFile(beansType)
         setHasOptionsMenu(true)
     }
 
@@ -49,6 +65,18 @@ class BeansTypeFragment : ListenableFragment() {
             roastPickerFragment.setTargetFragment(this@BeansTypeFragment, REQUEST_ROAST_PICKER)
             roastPickerFragment.show(fragmentManager, TAG_DIALOG_ROAST_PICKER)
         }
+        takePhotoButton.setOnClickListener {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile))
+            startActivityForResult(intent, REQUEST_TAKE_PHOTO)
+        }
+        beansPhotoImageView.viewTreeObserver.addOnGlobalLayoutListener(
+                object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        updatePhotoView()
+                        removeOnGlobalLayoutListener(beansPhotoImageView, this)
+                    }
+                })
         updateUi()
     }
 
@@ -94,6 +122,7 @@ class BeansTypeFragment : ListenableFragment() {
                             data.getIntExtra(RoastPickerFragment.EXTRA_ROAST_LEVEL, 0).toString()
                 }
             }
+            REQUEST_TAKE_PHOTO -> updatePhotoView()
         }
     }
 
@@ -101,12 +130,45 @@ class BeansTypeFragment : ListenableFragment() {
         beansType.name = beansNameEditText.text.toString()
         beansType.country = beansCountryEditText.text.toString()
         beansType.roastLevel = roastLevelButton.text.toString().toInt()
-        BeansTypeDataManager.instance(context).saveBeansType(beansType)
+        beansTypeDataManager.saveBeansType(beansType)
+    }
+
+    private fun updatePhotoView() {
+        photoFile?.let {
+            if (it.exists()) {
+                async(UI) {
+                    beansPhotoImageView.visibility = View.INVISIBLE
+                    beansPhotoProgressBar.visibility = View.VISIBLE
+
+                    val asyncGetScaledBitmap = async(CommonPool) {
+                        PictureUtils.getScaledBitmap(
+                                it.path, beansPhotoImageView.width, beansPhotoImageView.height)
+                    }
+                    val bitmap = asyncGetScaledBitmap.await()
+
+                    beansPhotoImageView.setImageBitmap(bitmap)
+                    beansPhotoProgressBar.visibility = View.GONE
+                    beansPhotoImageView.visibility = View.VISIBLE
+
+                }
+            } else {
+                beansPhotoImageView.setImageResource(R.drawable.ic_image)
+            }
+        } ?: beansPhotoImageView.setImageResource(R.drawable.ic_image)
     }
 
     private fun updateUi() {
         beansNameEditText.setText(beansType.name)
         roastLevelButton.text = beansType.roastLevel.toString()
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    fun removeOnGlobalLayoutListener(v: View, listener: ViewTreeObserver.OnGlobalLayoutListener) {
+        if (Build.VERSION.SDK_INT < 16) {
+            v.viewTreeObserver.removeGlobalOnLayoutListener(listener)
+        } else {
+            v.viewTreeObserver.removeOnGlobalLayoutListener(listener)
+        }
     }
 
     internal interface OnBeansTypeEditFinishedListener {
@@ -119,6 +181,7 @@ class BeansTypeFragment : ListenableFragment() {
         private val ARG_BEANS_TYPE_ID = "beans_type_id"
         private val TAG_DIALOG_ROAST_PICKER = "DialogRoastPicker"
         private val REQUEST_ROAST_PICKER = 0
+        private val REQUEST_TAKE_PHOTO = 1
 
         fun newInstance(beansTypeId: UUID): BeansTypeFragment {
             val args = Bundle()
