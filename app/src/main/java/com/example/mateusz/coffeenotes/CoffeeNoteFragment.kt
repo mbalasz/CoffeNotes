@@ -29,11 +29,11 @@ class CoffeeNoteFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        
         // TODO implement restoring coffee note from saved instance state.
         coffeeNote = CoffeeNote()
         // TODO remove this.
-//        coffeeNote?.beansType = BeansTypeDataManager.instance(context).getBeansTypeList()[2]
+//        coffeeNote?.beansType = BeansTypeDataManager.instance(context).getBeansTypes()[2]
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -95,6 +95,15 @@ class CoffeeNoteFragment : Fragment() {
     }
 
     companion object {
+        private val ARGS_COFFEE_NOTE_ID = "coffee_note_id"
+
+        fun newInstance(coffeeNoteId: UUID): CoffeeNoteFragment {
+            val args = Bundle()
+            args.putSerializable(ARGS_COFFEE_NOTE_ID, coffeeNoteId)
+            val fragment = newInstance()
+            fragment.arguments = args
+            return fragment
+        }
 
         fun newInstance(): CoffeeNoteFragment {
             return CoffeeNoteFragment()

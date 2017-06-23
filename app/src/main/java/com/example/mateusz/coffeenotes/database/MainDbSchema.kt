@@ -1,6 +1,6 @@
 package com.example.mateusz.coffeenotes.database
 
-class BeansTypeDbSchema {
+class MainDbSchema {
     object BeansTypeTable {
         val NAME: String = "beans_types"
 
@@ -9,6 +9,15 @@ class BeansTypeDbSchema {
             val NAME: String = "name"
             val COUNTRY: String = "country"
             val ROAST_LEVEL: String = "roast_level"
+        }
+    }
+
+    object CoffeeNotesTable {
+        val NAME: String = "coffee_notes"
+
+        object Cols {
+            val UUID: String = "uuid"
+            val TITLE: String = "title"
         }
     }
 }

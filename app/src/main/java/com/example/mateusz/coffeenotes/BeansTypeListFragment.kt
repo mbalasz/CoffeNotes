@@ -55,7 +55,7 @@ class BeansTypeListFragment : ListenableFragment() {
 
         val layoutManager = LinearLayoutManager(context)
         beansTypesRecyclerView.layoutManager = layoutManager
-        beansTypeAdapter = BeansTypeAdapter(beansTypeDataManager.getBeansTypeList())
+        beansTypeAdapter = BeansTypeAdapter(beansTypeDataManager.getBeansTypes())
         beansTypesRecyclerView.adapter = beansTypeAdapter
         val dividerItemDecoration = DividerItemDecoration(context, layoutManager.orientation)
         beansTypesRecyclerView.addItemDecoration(dividerItemDecoration)
@@ -100,7 +100,7 @@ class BeansTypeListFragment : ListenableFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == EDIT_BEANS_TYPE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                beansTypeAdapter.setBeansTypeList(beansTypeDataManager.getBeansTypeList())
+                beansTypeAdapter.setBeansTypeList(beansTypeDataManager.getBeansTypes())
                 beansTypeAdapter.notifyDataSetChanged()
             }
         }
@@ -121,7 +121,31 @@ class BeansTypeListFragment : ListenableFragment() {
     private inner class BeansTypeAdapter(private var beansTypesList: List<BeansType>)
         : RecyclerView.Adapter<BeansTypeAdapter.BeansTypeViewHolder>() {
 
-        inner class BeansTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun setBeansTypeList(beansTypeList: List<BeansType>) {
+            beansTypesList = beansTypeList
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
+                BeansTypeAdapter.BeansTypeViewHolder {
+            val inflater = LayoutInflater.from(context)
+            val view = inflater.inflate(R.layout.item_beans_type_row, parent, false)
+            return BeansTypeViewHolder(view)
+        }
+
+        override fun onBindViewHolder(
+                holder: BeansTypeAdapter.BeansTypeViewHolder, position: Int) {
+            holder.bindBeansType(beansTypesList[position])
+        }
+
+        override fun onViewRecycled(holder: BeansTypeViewHolder?) {
+            holder?.recycle()
+        }
+
+        override fun getItemCount(): Int {
+            return beansTypesList.size
+        }
+
+        private inner class BeansTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             private val beansNameTextView: TextView =
                     itemView.findViewById(R.id.item_beans_type_row_name_text_view) as TextView
             private val beansCountryTextView: TextView =
@@ -138,7 +162,7 @@ class BeansTypeListFragment : ListenableFragment() {
                     // TODO: remove this tight coupling to the data manager. Create a recyclerView,
                     // which operates on Cursor instead.
                     beansTypeDataManager.removeBeansType(beansTypesList[adapterPosition])
-                    setBeansTypeList(beansTypeDataManager.getBeansTypeList())
+                    setBeansTypeList(beansTypeDataManager.getBeansTypes())
                     notifyItemRemoved(adapterPosition)
                 }
             }
@@ -171,30 +195,6 @@ class BeansTypeListFragment : ListenableFragment() {
                     beansNameTextView.setTypeface(null, Typeface.NORMAL)
                 }
             }
-        }
-
-        fun setBeansTypeList(beansTypeList: List<BeansType>) {
-            beansTypesList = beansTypeList
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
-                BeansTypeAdapter.BeansTypeViewHolder {
-            val inflater = LayoutInflater.from(context)
-            val view = inflater.inflate(R.layout.item_beans_type_row, parent, false)
-            return BeansTypeViewHolder(view)
-        }
-
-        override fun onBindViewHolder(
-                holder: BeansTypeAdapter.BeansTypeViewHolder, position: Int) {
-            holder.bindBeansType(beansTypesList[position])
-        }
-
-        override fun onViewRecycled(holder: BeansTypeViewHolder?) {
-            holder?.recycle()
-        }
-
-        override fun getItemCount(): Int {
-            return beansTypesList.size
         }
     }
 

@@ -2,35 +2,36 @@ package com.example.mateusz.coffeenotes
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Environment
 import com.example.mateusz.coffeenotes.database.BeansTypeCursorWrapper
-import com.example.mateusz.coffeenotes.database.BeansTypeDatabaseHelper
-import com.example.mateusz.coffeenotes.database.BeansTypeDbSchema.*
+import com.example.mateusz.coffeenotes.database.MainDatabaseHelper
+import com.example.mateusz.coffeenotes.database.MainDbSchema.*
 import java.io.File
 import java.util.ArrayList
 import java.util.UUID
 
 class BeansTypeDataManager private constructor(val context: Context) {
-    val dataBase: SQLiteDatabase = BeansTypeDatabaseHelper(context).writableDatabase
+    val dataBase: SQLiteDatabase = MainDatabaseHelper(context).writableDatabase
 
-    fun getBeansTypeList(): List<BeansType> {
-        val beansTypeList: MutableList<BeansType> = ArrayList()
-        val cursor = queryBeansType(null, null)
+    fun getBeansTypes(): List<BeansType> {
+        val beansTypes: MutableList<BeansType> = ArrayList()
+        val cursor = queryBeansTypes(null, null)
 
         cursor.use {
             cursor.moveToFirst()
             while (!cursor.isAfterLast) {
-                beansTypeList.add(cursor.getBeansType())
+                beansTypes.add(cursor.getBeansType())
                 cursor.moveToNext()
             }
         }
 
-        return beansTypeList.toList()
+        return beansTypes.toList()
     }
 
     fun getBeansTypeById(id: UUID): BeansType? {
-        val cursor = queryBeansType(
+        val cursor = queryBeansTypes(
                 "${BeansTypeTable.Cols.UUID} = ?",
                 arrayOf(id.toString()))
 
@@ -81,10 +82,15 @@ class BeansTypeDataManager private constructor(val context: Context) {
                 arrayOf(uuid))
     }
 
-    private fun queryBeansType(whereClause: String?, whereArgs: Array<String>?):
+    private fun queryBeansTypes(whereClause: String?, whereArgs: Array<String>?):
             BeansTypeCursorWrapper {
-        val cursor = dataBase.query(
-                BeansTypeTable.NAME,
+        val cursor = query(BeansTypeTable.NAME, whereClause, whereArgs)
+        return BeansTypeCursorWrapper(cursor)
+    }
+
+    private fun query(table: String, whereClause: String?, whereArgs: Array<String>?): Cursor {
+        return dataBase.query(
+                table,
                 null,
                 whereClause,
                 whereArgs,
@@ -93,8 +99,6 @@ class BeansTypeDataManager private constructor(val context: Context) {
                 null, // orderBy
                 null // limit
         )
-
-        return BeansTypeCursorWrapper(cursor)
     }
 
     private fun getContentValues(beansType: BeansType): ContentValues {
