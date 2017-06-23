@@ -73,7 +73,7 @@ class BeansTypeListFragment : ListenableFragment() {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater!!.inflate(R.menu.fragment_beans_type_list_menu, menu)
+        inflater!!.inflate(R.menu.list_menu, menu)
         this.menu = menu!!
     }
 
