@@ -4,10 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.opengl.Visibility
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.EditText
@@ -92,17 +90,17 @@ class BeansTypeFragment : ListenableFragment() {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.fragment_beans_type_menu, menu)
+        inflater?.inflate(R.menu.discard_or_save_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_item_save_beans_type -> {
+            R.id.menu_item_save -> {
                 onSaveBeansType()
                 onBeansTypeEditFinishedListener.onBeansTypeSaved()
                 return true
             }
-            R.id.menu_item_discard_beans_type -> {
+            R.id.menu_item_discard -> {
                 onBeansTypeEditFinishedListener.onBeansTypeDiscarded()
                 return true
             }

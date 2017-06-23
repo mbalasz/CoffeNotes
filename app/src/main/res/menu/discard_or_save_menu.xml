@@ -3,13 +3,13 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_item_discard_beans_type"
+        android:id="@+id/menu_item_discard"
         android:icon="@drawable/ic_menu_discard"
         android:title="@string/discard"
         app:showAsAction="ifRoom">
     </item>
     <item
-        android:id="@+id/menu_item_save_beans_type"
+        android:id="@+id/menu_item_save"
         android:icon="@drawable/ic_menu_save"
         android:title="@string/save"
         app:showAsAction="ifRoom">

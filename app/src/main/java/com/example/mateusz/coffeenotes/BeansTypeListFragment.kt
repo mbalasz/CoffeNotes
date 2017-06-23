@@ -79,17 +79,17 @@ class BeansTypeListFragment : ListenableFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_item_beans_type_list_new_beans_type -> {
+            R.id.menu_item_list_new_item -> {
                 val intent = BeansTypeActivity.newIntent(context)
                 startActivityForResult(intent, EDIT_BEANS_TYPE_REQUEST)
                 setEditMode(false)
                 return true
             }
-            R.id.menu_item_beans_type_list_start_edit -> {
+            R.id.menu_item_list_start_edit -> {
                 setEditMode(true)
                 return true
             }
-            R.id.menu_item_beans_type_list_finish_edit -> {
+            R.id.menu_item_list_finish_edit -> {
                 setEditMode(false)
                 return true
             }
@@ -112,9 +112,9 @@ class BeansTypeListFragment : ListenableFragment() {
 
     private fun setEditMode(enabled: Boolean) {
         isInEditMode = enabled
-        menu.findItem(R.id.menu_item_beans_type_list_start_edit).isVisible = !enabled
-        menu.findItem(R.id.menu_item_beans_type_list_finish_edit).isVisible = enabled
-        menu.findItem(R.id.menu_item_beans_type_list_new_beans_type).isVisible = enabled
+        menu.findItem(R.id.menu_item_list_start_edit).isVisible = !enabled
+        menu.findItem(R.id.menu_item_list_finish_edit).isVisible = enabled
+        menu.findItem(R.id.menu_item_list_new_item).isVisible = enabled
         beansTypeAdapter.notifyDataSetChanged()
     }
 
