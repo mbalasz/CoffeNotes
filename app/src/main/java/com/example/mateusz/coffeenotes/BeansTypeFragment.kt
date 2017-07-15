@@ -21,8 +21,9 @@ import java.util.UUID
 import android.os.Build
 import android.view.ViewTreeObserver
 import android.annotation.TargetApi
+import android.support.v4.app.Fragment
 
-class BeansTypeFragment : ListenableFragment() {
+class BeansTypeFragment : Fragment() {
     private lateinit var beansType: BeansType
     private val beansNameEditText: EditText by bindView(R.id.beans_name_edit_text)
     private val beansCountryEditText: EditText by bindView(R.id.beans_country_edit_text)
@@ -83,7 +84,11 @@ class BeansTypeFragment : ListenableFragment() {
         try {
             onBeansTypeEditFinishedListener = context as OnBeansTypeEditFinishedListener
         } catch (e: ClassCastException) {
-            onNonListenerContextAttached(context)
+            throw RuntimeException(
+                    String.format(
+                            "%s must implement %s interface",
+                            context?.javaClass?.simpleName ?: "[null]",
+                            this.javaClass.simpleName))
         }
 
     }

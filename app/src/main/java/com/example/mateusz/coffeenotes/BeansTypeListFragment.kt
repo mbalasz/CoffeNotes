@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -17,11 +15,10 @@ import java.util.UUID
 
 import android.app.Activity.RESULT_OK
 import android.support.v7.widget.DividerItemDecoration
-import android.widget.ImageButton
 import butterknife.bindView
 import com.example.mateusz.coffeenotes.view.RemovableViewHolder
 
-class BeansTypeListFragment : ListenableFragment() {
+class BeansTypeListFragment : EditableListFragment() {
 
     private val beansTypeDataManager: BeansTypeDataManager by lazy {
         BeansTypeDataManager.instance(context)
@@ -63,7 +60,11 @@ class BeansTypeListFragment : ListenableFragment() {
         try {
             onBeansTypeSelectedListener = context as OnBeansTypeSelectedListener
         } catch (e: ClassCastException) {
-            onNonListenerContextAttached(context)
+            throw RuntimeException(
+                    String.format(
+                            "%s must implement %s interface",
+                            context?.javaClass?.simpleName ?: "[null]",
+                            this.javaClass.simpleName))
         }
 
     }

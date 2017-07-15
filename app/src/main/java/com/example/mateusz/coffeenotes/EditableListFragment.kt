@@ -7,21 +7,13 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 
-open class ListenableFragment : Fragment() {
+open class EditableListFragment : Fragment() {
     protected lateinit var menu: Menu
     protected var isInEditMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-    }
-
-    protected fun onNonListenerContextAttached(context: Context?) {
-        throw RuntimeException(
-                String.format(
-                        "%s must implement %s interface",
-                        context?.javaClass?.simpleName ?: "[null]",
-                        this.javaClass.simpleName))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

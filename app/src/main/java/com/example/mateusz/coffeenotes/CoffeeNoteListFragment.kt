@@ -3,7 +3,6 @@ package com.example.mateusz.coffeenotes
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -13,7 +12,7 @@ import butterknife.bindView
 import com.example.mateusz.coffeenotes.view.RemovableViewHolder
 
 // TODO: Create an abstract ListFragment, which common logic for RecyclerView and options menu.
-class CoffeeNoteListFragment : ListenableFragment() {
+class CoffeeNoteListFragment : EditableListFragment() {
 
     private val coffeeNoteRecyclerView: RecyclerView by bindView(R.id.coffee_note_recycler_view)
     private val coffeeNoteDataManager: CoffeeNoteDataManager by lazy {
