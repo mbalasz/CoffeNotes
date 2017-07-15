@@ -1,5 +1,6 @@
 package com.example.mateusz.coffeenotes
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -35,14 +36,26 @@ class CoffeeNoteListFragment : ListenableFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_EDIT_COFFEE_NOTE -> {
-                coffeeNoteRecyclerView.adapter.notifyDataSetChanged()
+                if (resultCode == RESULT_OK) {
+                    coffeeNoteRecyclerView.adapter.notifyDataSetChanged()
+                }
             }
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
+        when (item.itemId) {
+            R.id.menu_item_list_new_item -> {
+                val intent = CoffeeNoteActivity.newIntent(context)
+                startActivityForResult(intent, REQUEST_EDIT_COFFEE_NOTE)
+                setEditMode(false)
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
+
+
 
     private inner class CoffeeNoteAdapter(private var coffeeNoteList: List<CoffeeNote>)
         : RecyclerView.Adapter<CoffeeNoteAdapter.CoffeeNoteViewHolder>() {
