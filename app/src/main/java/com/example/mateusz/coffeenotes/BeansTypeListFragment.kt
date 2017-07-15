@@ -19,6 +19,7 @@ import android.app.Activity.RESULT_OK
 import android.support.v7.widget.DividerItemDecoration
 import android.widget.ImageButton
 import butterknife.bindView
+import com.example.mateusz.coffeenotes.view.RemovableViewHolder
 
 class BeansTypeListFragment : ListenableFragment() {
 
@@ -145,31 +146,30 @@ class BeansTypeListFragment : ListenableFragment() {
             return beansTypesList.size
         }
 
-        private inner class BeansTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private inner class BeansTypeViewHolder(itemView: View) : RemovableViewHolder(itemView) {
             private val beansNameTextView: TextView =
                     itemView.findViewById(R.id.item_beans_type_row_name_text_view) as TextView
             private val beansCountryTextView: TextView =
                     itemView.findViewById(R.id.item_beans_type_row_country_text_view) as TextView
-            private val removeButton: ImageButton =
-                    itemView.findViewById(R.id.item_beans_type_row_remove_button) as ImageButton
             private lateinit var beansType: BeansType
 
             init {
                 itemView.setOnClickListener {
                     onRowClicked()
                 }
-                removeButton.setOnClickListener {
-                    // TODO: remove this tight coupling to the data manager. Create a recyclerView,
-                    // which operates on Cursor instead.
-                    beansTypeDataManager.removeBeansType(beansTypesList[adapterPosition])
-                    setBeansTypeList(beansTypeDataManager.getBeansTypes())
-                    notifyItemRemoved(adapterPosition)
-                }
             }
 
             fun bindBeansType(beansType: BeansType) {
                 this.beansType = beansType
                 updateViewHolder()
+            }
+
+            override fun onRemoveItem() {
+                // TODO: remove this tight coupling to the data manager. Create a recyclerView,
+                // which operates on Cursor instead.
+                beansTypeDataManager.removeBeansType(beansTypesList[adapterPosition])
+                setBeansTypeList(beansTypeDataManager.getBeansTypes())
+                notifyItemRemoved(adapterPosition)
             }
 
             private fun onRowClicked() {
@@ -187,7 +187,7 @@ class BeansTypeListFragment : ListenableFragment() {
                 if (beansType.id == highlightedBeansTypeId) {
                     beansNameTextView.setTypeface(null, Typeface.BOLD)
                 }
-                removeButton.visibility = if (isInEditMode) View.VISIBLE else View.INVISIBLE
+                updateEditMode(isInEditMode)
             }
 
             fun recycle() {
