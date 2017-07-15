@@ -12,7 +12,7 @@ import butterknife.bindView
 import com.example.mateusz.coffeenotes.view.RemovableViewHolder
 
 // TODO: Create an abstract ListFragment, which common logic for RecyclerView and options menu.
-class CoffeeNoteListFragment : Fragment() {
+class CoffeeNoteListFragment : ListenableFragment() {
 
     private val coffeeNoteRecyclerView: RecyclerView by bindView(R.id.coffee_note_recycler_view)
     private val coffeeNoteDataManager: CoffeeNoteDataManager by lazy {
@@ -40,12 +40,7 @@ class CoffeeNoteListFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater!!.inflate(R.menu.list_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return super.onOptionsItemSelected(item)
     }
 

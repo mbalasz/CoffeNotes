@@ -23,9 +23,6 @@ import com.example.mateusz.coffeenotes.view.RemovableViewHolder
 
 class BeansTypeListFragment : ListenableFragment() {
 
-    private lateinit var menu: Menu
-    private var isInEditMode = false
-
     private val beansTypeDataManager: BeansTypeDataManager by lazy {
         BeansTypeDataManager.instance(context)
     }
@@ -44,7 +41,6 @@ class BeansTypeListFragment : ListenableFragment() {
                 highlightedBeansTypeId = args.getSerializable(ARG_HIGHLIGHTED_BEANS_TYPE_ID) as UUID
             }
         }
-        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -72,25 +68,11 @@ class BeansTypeListFragment : ListenableFragment() {
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater!!.inflate(R.menu.list_menu, menu)
-        this.menu = menu!!
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_item_list_new_item -> {
                 val intent = BeansTypeActivity.newIntent(context)
                 startActivityForResult(intent, EDIT_BEANS_TYPE_REQUEST)
-                setEditMode(false)
-                return true
-            }
-            R.id.menu_item_list_start_edit -> {
-                setEditMode(true)
-                return true
-            }
-            R.id.menu_item_list_finish_edit -> {
                 setEditMode(false)
                 return true
             }
@@ -111,11 +93,8 @@ class BeansTypeListFragment : ListenableFragment() {
         fun onBeansTypeSelected(beansType: BeansType)
     }
 
-    private fun setEditMode(enabled: Boolean) {
-        isInEditMode = enabled
-        menu.findItem(R.id.menu_item_list_start_edit).isVisible = !enabled
-        menu.findItem(R.id.menu_item_list_finish_edit).isVisible = enabled
-        menu.findItem(R.id.menu_item_list_new_item).isVisible = enabled
+    override fun setEditMode(enabled: Boolean) {
+        super.setEditMode(enabled)
         beansTypeAdapter.notifyDataSetChanged()
     }
 
