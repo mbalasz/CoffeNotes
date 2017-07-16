@@ -7,6 +7,6 @@ class FragmentTestRule<T: Fragment>(val fragmentClass: Class<T>)
     : ActivityTestRule<FragmentTestActivity>(FragmentTestActivity::class.java) {
     override fun beforeActivityLaunched() {
         super.beforeActivityLaunched()
-        FragmentTestUtil.fragment = fragmentClass.newInstance()
+        FragmentTestActivity.fragment = fragmentClass.newInstance()
     }
 }
