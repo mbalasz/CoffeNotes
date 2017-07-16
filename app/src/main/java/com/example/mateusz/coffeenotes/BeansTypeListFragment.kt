@@ -70,14 +70,14 @@ class BeansTypeListFragment : EditableListFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val isConsumed = super.onOptionsItemSelected(item)
         when (item.itemId) {
             R.id.menu_item_list_new_item -> {
                 val intent = BeansTypeActivity.newIntent(context)
                 startActivityForResult(intent, EDIT_BEANS_TYPE_REQUEST)
-                setEditMode(false)
                 return true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> return isConsumed
         }
     }
 

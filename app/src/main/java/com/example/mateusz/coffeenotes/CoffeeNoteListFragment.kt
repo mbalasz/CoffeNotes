@@ -43,14 +43,14 @@ class CoffeeNoteListFragment : EditableListFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val isConsumed = super.onOptionsItemSelected(item)
         when (item.itemId) {
             R.id.menu_item_list_new_item -> {
                 val intent = CoffeeNoteActivity.newIntent(context)
                 startActivityForResult(intent, REQUEST_EDIT_COFFEE_NOTE)
-                setEditMode(false)
                 return true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> return isConsumed
         }
     }
 

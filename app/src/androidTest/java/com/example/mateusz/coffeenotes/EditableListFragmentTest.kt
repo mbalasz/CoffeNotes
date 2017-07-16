@@ -37,6 +37,14 @@ class EditableListFragmentTest {
         assertEditModeIsDisplayed(false)
     }
 
+    @Test
+    fun clickAddNewItem_TurnsOffEditMode() {
+        clickView(R.id.menu_item_list_start_edit)
+
+        clickView(R.id.menu_item_list_new_item)
+        assertEditModeIsDisplayed(false)
+    }
+
     private fun assertEditModeIsDisplayed(isDisplayed: Boolean) {
         if (isDisplayed) {
             assertViewIsDisplayed(R.id.menu_item_list_finish_edit)

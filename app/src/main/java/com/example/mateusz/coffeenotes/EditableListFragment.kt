@@ -38,6 +38,10 @@ open class EditableListFragment : Fragment() {
                 setEditMode(false)
                 return true
             }
+            R.id.menu_item_list_new_item -> {
+                setEditMode(false)
+                return true
+            }
             else -> return super.onOptionsItemSelected(item)
         }
     }
