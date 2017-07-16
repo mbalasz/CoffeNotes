@@ -23,17 +23,6 @@ class CoffeeNoteListFragmentTest {
             IntentsTestRule(CoffeeNoteListActivity::class.java)
 
     @Test
-    fun clickEditMenuItem_TurnsOnEditMode() {
-        onView(withId(R.id.menu_item_list_finish_edit)).check(doesNotExist())
-        onView(withId(R.id.menu_item_list_new_item)).check(doesNotExist())
-
-        onView(withId(R.id.menu_item_list_start_edit)).perform(click())
-
-        onView(withId(R.id.menu_item_list_finish_edit)).check(matches(isDisplayed()))
-        onView(withId(R.id.menu_item_list_new_item)).check(matches(isDisplayed()))
-    }
-
-    @Test
     fun onMenuNewItem_startCoffeeNoteActivity() {
         onView(withId(R.id.menu_item_list_start_edit)).perform(click())
 

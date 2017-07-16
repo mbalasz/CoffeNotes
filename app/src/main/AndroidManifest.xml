@@ -18,8 +18,7 @@
         </activity>
         <activity android:name=".CoffeeNoteActivity">
         </activity>
-        <activity
-            android:name=".BeansTypeActivity">
+        <activity android:name=".BeansTypeActivity">
         </activity>
         <activity android:name=".BeansTypeListActivity">
         </activity>
