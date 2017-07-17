@@ -14,7 +14,7 @@ import com.example.mateusz.coffeenotes.view.RemovableViewHolder
 // TODO: Create an abstract ListFragment, which common logic for RecyclerView and options menu.
 class CoffeeNoteListFragment : EditableListFragment() {
 
-    private val coffeeNoteRecyclerView: RecyclerView by bindView(R.id.coffee_note_recycler_view)
+    private val coffeeNoteRecyclerView: RecyclerView by bindView(R.id.recycler_view)
     private val coffeeNoteDataManager: CoffeeNoteDataManager by lazy {
         CoffeeNoteDataManager.instance(context)
     }

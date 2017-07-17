@@ -24,7 +24,7 @@ class BeansTypeListFragment : EditableListFragment() {
         BeansTypeDataManager.instance(context)
     }
 
-    private val beansTypesRecyclerView: RecyclerView by bindView(R.id.beans_types_recycler_view)
+    private val beansTypesRecyclerView: RecyclerView by bindView(R.id.recycler_view)
     private lateinit var beansTypeAdapter: BeansTypeAdapter
     private var highlightedBeansTypeId: UUID? = null
 

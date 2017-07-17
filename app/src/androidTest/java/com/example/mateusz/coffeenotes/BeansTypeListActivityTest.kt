@@ -17,18 +17,24 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class CoffeeNoteListActivityTest {
+class BeansTypeListActivityTest : AbstractListActivityTest() {
 
     @Rule @JvmField
-    val activityRule: ActivityTestRule<CoffeeNoteListActivity> =
-            IntentsTestRule(CoffeeNoteListActivity::class.java)
+    val activityRule: ActivityTestRule<BeansTypeListActivity> =
+            IntentsTestRule(BeansTypeListActivity::class.java)
+
+    @Before
+    fun setUpBeansTypeList() {
+        // TODO: Provide a test module for data manager.
+        BeansTypeDataManager.instance(activityRule.activity).saveBeansType(BeansType())
+    }
 
     @Test
-    fun onMenuNewItem_startCoffeeNoteActivity() {
+    fun onMenuNewItem_startBeansTypeActivity() {
         onView(withId(R.id.menu_item_list_start_edit)).perform(click())
 
         onView(withId(R.id.menu_item_list_new_item)).perform(click())
 
-        intended(IntentMatchers.hasComponent(CoffeeNoteActivity::class.java.name))
+        intended(IntentMatchers.hasComponent(BeansTypeActivity::class.java.name))
     }
 }
