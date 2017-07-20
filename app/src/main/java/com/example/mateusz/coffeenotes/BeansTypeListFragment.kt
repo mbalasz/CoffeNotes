@@ -16,6 +16,7 @@ import java.util.UUID
 import android.app.Activity.RESULT_OK
 import android.support.v7.widget.DividerItemDecoration
 import butterknife.bindView
+import com.example.mateusz.coffeenotes.view.EditableListFragment
 import com.example.mateusz.coffeenotes.view.RemovableViewHolder
 
 class BeansTypeListFragment : EditableListFragment() {

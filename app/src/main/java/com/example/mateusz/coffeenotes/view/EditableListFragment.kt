@@ -1,10 +1,11 @@
-package com.example.mateusz.coffeenotes
+package com.example.mateusz.coffeenotes.view
 
 import android.support.v4.app.Fragment
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import com.example.mateusz.coffeenotes.R
 
 open class EditableListFragment : Fragment() {
     protected lateinit var menu: Menu

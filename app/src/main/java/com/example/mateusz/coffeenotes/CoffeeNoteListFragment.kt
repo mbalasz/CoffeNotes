@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.TextView
 import butterknife.bindView
+import com.example.mateusz.coffeenotes.view.EditableListFragment
 import com.example.mateusz.coffeenotes.view.RemovableViewHolder
 
 // TODO: Create an abstract ListFragment, which common logic for RecyclerView and options menu.
