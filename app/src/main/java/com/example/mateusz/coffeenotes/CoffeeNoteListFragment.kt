@@ -35,8 +35,8 @@ class CoffeeNoteListFragment : EditableListFragment<CoffeeNote>() {
         }
     }
 
-    override fun createAdapter(): EditableListAdapter {
-        return EditableListAdapter(coffeeNoteDataManager.getCoffeeNotes())
+    override fun getDataList(): List<CoffeeNote> {
+        return coffeeNoteDataManager.getCoffeeNotes()
     }
 
     override fun createContentViewHolder(): ContentViewHolder<CoffeeNote> {

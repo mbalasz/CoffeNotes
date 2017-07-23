@@ -27,7 +27,7 @@ abstract class EditableListFragment<T: Any> : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = createAdapter()
+        adapter = EditableListAdapter(getDataList())
         recyclerView.adapter = adapter
 
         val layoutManager = LinearLayoutManager(context)
@@ -66,7 +66,7 @@ abstract class EditableListFragment<T: Any> : Fragment() {
         }
     }
 
-    protected abstract fun createAdapter(): EditableListAdapter
+    protected abstract fun getDataList(): List<T>
 
     protected abstract fun createContentViewHolder(): ContentViewHolder<T>
 

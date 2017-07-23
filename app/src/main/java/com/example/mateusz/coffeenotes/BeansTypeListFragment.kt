@@ -76,8 +76,8 @@ class BeansTypeListFragment : EditableListFragment<BeansType>() {
         adapter.notifyDataSetChanged()
     }
 
-    override fun createAdapter(): EditableListAdapter {
-        return EditableListAdapter(beansTypeDataManager.getBeansTypes())
+    override fun getDataList(): List<BeansType> {
+        return beansTypeDataManager.getBeansTypes()
     }
 
     override fun createContentViewHolder(): ContentViewHolder<BeansType> {

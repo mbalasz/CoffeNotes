@@ -107,8 +107,8 @@ class EditableListFragmentTest {
 
     class EditableListFragmentForTest : EditableListFragment<Int>() {
 
-        override fun createAdapter(): EditableListAdapter {
-            return EditableListAdapter(listOf(1, 2, 3, 4))
+        override fun getDataList(): List<Int> {
+            return listOf(1, 2, 3, 4)
         }
 
         override fun createContentViewHolder(): ContentViewHolder<Int> {
