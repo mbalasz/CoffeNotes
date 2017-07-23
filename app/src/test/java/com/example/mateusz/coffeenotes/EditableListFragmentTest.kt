@@ -25,7 +25,6 @@ class EditableListFragmentTest {
     @Test
     fun editModeItemsHiddenByDefault() {
         assertViewIsDisplayed(R.id.menu_item_list_start_edit)
-
         assertEditModeIsDisplayed(false)
     }
 
@@ -33,6 +32,7 @@ class EditableListFragmentTest {
     fun clickEditMenuItem_TurnsOnEditMode() {
         clickView(R.id.menu_item_list_start_edit)
 
+        assertViewDoesNotExist(R.id.menu_item_list_start_edit)
         assertEditModeIsDisplayed(true)
     }
 
@@ -41,6 +41,8 @@ class EditableListFragmentTest {
         clickView(R.id.menu_item_list_start_edit)
 
         clickView(R.id.menu_item_list_finish_edit)
+
+        assertViewIsDisplayed(R.id.menu_item_list_start_edit)
         assertEditModeIsDisplayed(false)
     }
 
@@ -49,6 +51,8 @@ class EditableListFragmentTest {
         clickView(R.id.menu_item_list_start_edit)
 
         clickView(R.id.menu_item_list_new_item)
+
+        assertViewIsDisplayed(R.id.menu_item_list_start_edit)
         assertEditModeIsDisplayed(false)
     }
 
