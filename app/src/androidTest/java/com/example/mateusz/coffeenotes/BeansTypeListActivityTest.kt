@@ -8,6 +8,7 @@ import android.support.test.espresso.intent.matcher.IntentMatchers.*
 import android.support.test.espresso.intent.rule.IntentsTestRule
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
+import com.example.mateusz.coffeenotes.EspressoUtil.Companion.clickView
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -15,7 +16,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class BeansTypeListActivityTest : AbstractListFragmentTest() {
+class BeansTypeListActivityTest {
     val beansTypeDataManager: BeansTypeDataManager by lazy {
         BeansTypeDataManager.instance(activityRule.activity)
     }
