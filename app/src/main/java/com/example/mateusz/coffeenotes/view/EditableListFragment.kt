@@ -10,6 +10,16 @@ import android.widget.ImageButton
 import butterknife.bindView
 import com.example.mateusz.coffeenotes.R
 
+/**
+ * Base class for Fragments which show a list of items.
+ *
+ * It uses RecyclerView for showing list.
+ *
+ * Every item:
+ *  - is by default removable.
+ *  - Contains a content view container which is supposed to be implemented and returned by child
+ *      classes.
+ */
 abstract class EditableListFragment<T: Any> : Fragment() {
     protected lateinit var menu: Menu
     protected var isInEditMode = false
