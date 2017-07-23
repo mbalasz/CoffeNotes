@@ -4,29 +4,20 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import java.util.UUID
-
 import android.app.Activity.RESULT_OK
-import android.support.v7.widget.DividerItemDecoration
-import butterknife.bindView
+import com.example.mateusz.coffeenotes.view.ContentViewHolder
 import com.example.mateusz.coffeenotes.view.EditableListFragment
-import com.example.mateusz.coffeenotes.view.RemovableViewHolder
 
-class BeansTypeListFragment : EditableListFragment() {
+class BeansTypeListFragment : EditableListFragment<BeansType>() {
 
     private val beansTypeDataManager: BeansTypeDataManager by lazy {
         BeansTypeDataManager.instance(context)
     }
 
-    private val beansTypesRecyclerView: RecyclerView by bindView(R.id.recycler_view)
-    private lateinit var beansTypeAdapter: BeansTypeAdapter
     private var highlightedBeansTypeId: UUID? = null
 
     private lateinit var onBeansTypeSelectedListener: OnBeansTypeSelectedListener
@@ -39,21 +30,6 @@ class BeansTypeListFragment : EditableListFragment() {
                 highlightedBeansTypeId = args.getSerializable(ARG_HIGHLIGHTED_BEANS_TYPE_ID) as UUID
             }
         }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? =
-            inflater!!.inflate(R.layout.fragment_beans_type_list, container, false)
-
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val layoutManager = LinearLayoutManager(context)
-        beansTypesRecyclerView.layoutManager = layoutManager
-        beansTypeAdapter = BeansTypeAdapter(beansTypeDataManager.getBeansTypes())
-        beansTypesRecyclerView.adapter = beansTypeAdapter
-        val dividerItemDecoration = DividerItemDecoration(context, layoutManager.orientation)
-        beansTypesRecyclerView.addItemDecoration(dividerItemDecoration)
     }
 
     override fun onAttach(context: Context?) {
@@ -85,8 +61,8 @@ class BeansTypeListFragment : EditableListFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == EDIT_BEANS_TYPE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                beansTypeAdapter.setBeansTypeList(beansTypeDataManager.getBeansTypes())
-                beansTypeAdapter.notifyDataSetChanged()
+                adapter.setDataList(beansTypeDataManager.getBeansTypes())
+                adapter.notifyDataSetChanged()
             }
         }
     }
@@ -97,86 +73,58 @@ class BeansTypeListFragment : EditableListFragment() {
 
     override fun setEditMode(enabled: Boolean) {
         super.setEditMode(enabled)
-        beansTypeAdapter.notifyDataSetChanged()
+        adapter.notifyDataSetChanged()
     }
 
-    private inner class BeansTypeAdapter(private var beansTypesList: List<BeansType>)
-        : RecyclerView.Adapter<BeansTypeAdapter.BeansTypeViewHolder>() {
+    override fun createAdapter(): EditableListAdapter {
+        return EditableListAdapter(beansTypeDataManager.getBeansTypes())
+    }
 
-        fun setBeansTypeList(beansTypeList: List<BeansType>) {
-            beansTypesList = beansTypeList
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
-                BeansTypeAdapter.BeansTypeViewHolder {
-            val inflater = LayoutInflater.from(context)
-            val view = inflater.inflate(R.layout.item_beans_type_row, parent, false)
-            return BeansTypeViewHolder(view)
-        }
-
-        override fun onBindViewHolder(
-                holder: BeansTypeAdapter.BeansTypeViewHolder, position: Int) {
-            holder.bindBeansType(beansTypesList[position])
-        }
-
-        override fun onViewRecycled(holder: BeansTypeViewHolder?) {
-            holder?.recycle()
-        }
-
-        override fun getItemCount(): Int {
-            return beansTypesList.size
-        }
-
-        private inner class BeansTypeViewHolder(itemView: View) : RemovableViewHolder(itemView) {
-            private val beansNameTextView: TextView =
-                    itemView.findViewById(R.id.item_beans_type_row_name_text_view) as TextView
-            private val beansCountryTextView: TextView =
-                    itemView.findViewById(R.id.item_beans_type_row_country_text_view) as TextView
-            private lateinit var beansType: BeansType
+    override fun createContentViewHolder(): ContentViewHolder<BeansType> {
+        return object : ContentViewHolder<BeansType>() {
+            private val beansNameTextView: TextView
+            private val beansCountryTextView: TextView
 
             init {
-                itemView.setOnClickListener {
-                    onRowClicked()
-                }
+                val inflater = LayoutInflater.from(context)
+                view = inflater.inflate(R.layout.item_beans_type_content_view, null, false)
+
+                beansNameTextView =
+                        view.findViewById(R.id.item_beans_type_row_name_text_view) as TextView
+                beansCountryTextView =
+                        view.findViewById(R.id.item_beans_type_row_country_text_view) as TextView
             }
 
-            fun bindBeansType(beansType: BeansType) {
-                this.beansType = beansType
-                updateViewHolder()
-            }
-
-            override fun onRemoveItem() {
-                // TODO: remove this tight coupling to the data manager. Create a recyclerView,
-                // which operates on Cursor instead.
-                beansTypeDataManager.removeBeansType(beansTypesList[adapterPosition])
-                setBeansTypeList(beansTypeDataManager.getBeansTypes())
-                notifyItemRemoved(adapterPosition)
-            }
-
-            private fun onRowClicked() {
+            override fun onClicked() {
                 if (!isInEditMode) {
-                    onBeansTypeSelectedListener.onBeansTypeSelected(beansType)
+                    onBeansTypeSelectedListener.onBeansTypeSelected(data)
                 } else {
-                    val intent = BeansTypeActivity.newIntent(context, beansType.id)
+                    val intent = BeansTypeActivity.newIntent(context, data.id)
                     startActivityForResult(intent, EDIT_BEANS_TYPE_REQUEST)
                 }
             }
 
-            private fun updateViewHolder() {
-                beansNameTextView.text = beansType.name
-                beansCountryTextView.text = beansType.country
-                if (beansType.id == highlightedBeansTypeId) {
+            override fun onUpdateView() {
+                beansNameTextView.text = data.name
+                beansCountryTextView.text = data.country
+                if (data.id == highlightedBeansTypeId) {
                     beansNameTextView.setTypeface(null, Typeface.BOLD)
                 }
-                updateEditMode(isInEditMode)
             }
 
-            fun recycle() {
-                if (beansType.id == highlightedBeansTypeId) {
+            override fun onRecycle() {
+                if (data.id == highlightedBeansTypeId) {
                     beansNameTextView.setTypeface(null, Typeface.NORMAL)
                 }
             }
         }
+    }
+
+    override fun onRemoveContentViewHolder(contentViewHolder: ContentViewHolder<BeansType>) {
+        // TODO: remove this tight coupling to the data manager. Create a recyclerView,
+        // which operates on Cursor instead.
+        beansTypeDataManager.removeBeansType(contentViewHolder.data)
+        adapter.setDataList(beansTypeDataManager.getBeansTypes())
     }
 
     companion object {

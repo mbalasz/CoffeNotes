@@ -17,7 +17,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class BeansTypeListActivityTest : AbstractListActivityTest() {
+class BeansTypeListActivityTest {
 
     @Rule @JvmField
     val activityRule: ActivityTestRule<BeansTypeListActivity> =

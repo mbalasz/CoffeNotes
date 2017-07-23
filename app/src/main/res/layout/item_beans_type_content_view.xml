@@ -2,7 +2,8 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,13 +19,15 @@
         <TextView
             android:id="@+id/item_beans_type_row_name_text_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            tools:text="name">
         </TextView>
 
         <TextView
             android:id="@+id/item_beans_type_row_country_text_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            tools:text="country">
         </TextView>
     </LinearLayout>
 
@@ -38,11 +41,4 @@
         android:paddingRight="16dp"
         android:paddingEnd="16dp"
         android:src="@drawable/ic_image"/>
-
-    <include layout="@layout/remove_button"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_centerVertical="true"
-             android:layout_alignParentEnd="true"
-             android:layout_alignParentRight="true"/>
 </RelativeLayout>

@@ -2,42 +2,22 @@ package com.example.mateusz.coffeenotes
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.TextView
-import butterknife.bindView
+import com.example.mateusz.coffeenotes.view.ContentViewHolder
 import com.example.mateusz.coffeenotes.view.EditableListFragment
-import com.example.mateusz.coffeenotes.view.RemovableViewHolder
 
-// TODO: Create an abstract ListFragment, which common logic for RecyclerView and options menu.
-class CoffeeNoteListFragment : EditableListFragment() {
+class CoffeeNoteListFragment : EditableListFragment<CoffeeNote>() {
 
-    private val coffeeNoteRecyclerView: RecyclerView by bindView(R.id.recycler_view)
     private val coffeeNoteDataManager: CoffeeNoteDataManager by lazy {
         CoffeeNoteDataManager.instance(context)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_coffee_note_list, container, false)
-    }
-
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        coffeeNoteRecyclerView.adapter = CoffeeNoteAdapter(coffeeNoteDataManager.getCoffeeNotes())
-        val layoutManager = LinearLayoutManager(context)
-        coffeeNoteRecyclerView.layoutManager = layoutManager
-        val dividerItemDecoration = DividerItemDecoration(context, layoutManager.orientation)
-        coffeeNoteRecyclerView.addItemDecoration(dividerItemDecoration)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_EDIT_COFFEE_NOTE -> {
                 if (resultCode == RESULT_OK) {
-                    coffeeNoteRecyclerView.adapter.notifyDataSetChanged()
+                    adapter.notifyDataSetChanged()
                 }
             }
         }
@@ -55,51 +35,38 @@ class CoffeeNoteListFragment : EditableListFragment() {
         }
     }
 
+    override fun createAdapter(): EditableListAdapter {
+        return EditableListAdapter(coffeeNoteDataManager.getCoffeeNotes())
+    }
 
-
-    private inner class CoffeeNoteAdapter(private var coffeeNoteList: List<CoffeeNote>)
-        : RecyclerView.Adapter<CoffeeNoteAdapter.CoffeeNoteViewHolder>() {
-
-        override fun onBindViewHolder(holder: CoffeeNoteViewHolder?, position: Int) {
-            holder!!.bindCoffeeNote(coffeeNoteList[position])
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): CoffeeNoteViewHolder {
-            val view = LayoutInflater.from(context).inflate(
-                    R.layout.item_coffee_note_row, parent, false)
-            return CoffeeNoteViewHolder(view)
-        }
-
-        override fun getItemCount(): Int {
-            return coffeeNoteList.size
-        }
-
-        private inner class CoffeeNoteViewHolder(itemView: View) : RemovableViewHolder(itemView) {
-            private val coffeeNoteNameTextView: TextView =
-                    itemView.findViewById(R.id.item_coffee_note_row_name_text_view) as TextView
-            private lateinit var coffeeNote: CoffeeNote
+    override fun createContentViewHolder(): ContentViewHolder<CoffeeNote> {
+        return object : ContentViewHolder<CoffeeNote>() {
+            private val coffeeNoteNameTextView: TextView
 
             init {
-                itemView.setOnClickListener {
-                    startActivityForResult(
-                            CoffeeNoteActivity.newIntent(context, coffeeNote.uuid),
-                            REQUEST_EDIT_COFFEE_NOTE)
-                }
+                val inflater = LayoutInflater.from(context)
+                val view = inflater.inflate(R.layout.item_coffee_note_content_view, null, false)
+
+                coffeeNoteNameTextView =
+                        view.findViewById(R.id.item_coffee_note_row_name_text_view) as TextView
             }
 
-            override fun onRemoveItem() {
+            override fun onClicked() {
+                startActivityForResult(
+                        CoffeeNoteActivity.newIntent(context, data.uuid),
+                        REQUEST_EDIT_COFFEE_NOTE)
             }
 
-            fun bindCoffeeNote(coffeeNote: CoffeeNote) {
-                this.coffeeNote = coffeeNote
-                updateViewHolder()
+            override fun onUpdateView() {
+                coffeeNoteNameTextView.text = data.title
             }
 
-            fun updateViewHolder() {
-                coffeeNoteNameTextView.text = coffeeNote.title
-            }
+            override fun onRecycle() {}
+
         }
     }
+
+    override fun onRemoveContentViewHolder(contentViewHolder: ContentViewHolder<CoffeeNote>) {}
 
     companion object {
         val REQUEST_EDIT_COFFEE_NOTE = 0
