@@ -17,6 +17,7 @@ import java.util.UUID
 
 import android.app.Activity.RESULT_OK
 import butterknife.bindView
+import com.example.mateusz.coffeenotes.application.MyApplication
 
 class CoffeeNoteFragment : Fragment() {
     private val SELECT_COFFEE_BEANS_TYPE_REQUEST = 1
@@ -33,7 +34,7 @@ class CoffeeNoteFragment : Fragment() {
         // TODO implement restoring coffee note from saved instance state.
         coffeeNote = CoffeeNote()
         // TODO remove this.
-//        coffeeNote?.beansType = BeansTypeDataManager.instance(context).getBeansTypes()[2]
+//        coffeeNote?.beansType = BeansTypeDataManagerImpl.instance(context).getBeansTypes()[2]
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +54,11 @@ class CoffeeNoteFragment : Fragment() {
                         data.getSerializableExtra(
                                 BeansTypeListActivity.EXTRA_SELECTED_BEANS_TYPE_ID) as UUID
                 val selectedBeansType =
-                        BeansTypeDataManager.instance(context).getBeansTypeById(selectedBeansTypeId)
+                        MyApplication
+                                .get(context)
+                                .getAppComponent()
+                                .beansTypeDataManager
+                                .getBeansTypeById(selectedBeansTypeId)
                 coffeeNote?.beansType = selectedBeansType
                 updateBeansTypeCardViewUi()
             }
