@@ -9,7 +9,7 @@ import com.example.mateusz.coffeenotes.database.MainDbSchema
 import java.util.ArrayList
 
 class CoffeeNoteDataManager private constructor(context: Context) {
-    // TODO: make this and BeansTypeDataManager a subclass of an abstract DataManager.
+    // TODO: make this and BeansTypeDataManagerImpl a subclass of an abstract DataManager.
     val dataBase: SQLiteDatabase = MainDatabaseHelper(context).writableDatabase
 
     fun getCoffeeNotes(): List<CoffeeNote> {

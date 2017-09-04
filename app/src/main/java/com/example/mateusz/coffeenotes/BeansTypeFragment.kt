@@ -22,6 +22,8 @@ import android.os.Build
 import android.view.ViewTreeObserver
 import android.annotation.TargetApi
 import android.support.v4.app.Fragment
+import com.example.mateusz.coffeenotes.application.MyApplication
+import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
 
 class BeansTypeFragment : Fragment() {
     private lateinit var beansType: BeansType
@@ -31,15 +33,14 @@ class BeansTypeFragment : Fragment() {
     private val beansPhotoImageView: ImageView by bindView(R.id.beans_photo_image_view)
     private val beansPhotoProgressBar: ProgressBar by bindView(R.id.beans_photo_progress_bar)
     private val takePhotoButton: Button by bindView(R.id.take_photo_button)
-    private val beansTypeDataManager: BeansTypeDataManager by lazy {
-        BeansTypeDataManager.instance(context)
-    }
+    lateinit var beansTypeDataManager: BeansTypeDataManager
     private var photoFile: File? = null
 
     private lateinit var onBeansTypeEditFinishedListener: OnBeansTypeEditFinishedListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        inject()
         val args = arguments
         if (args != null) {
             val beansTypeId = arguments.getSerializable(ARG_BEANS_TYPE_ID) as UUID
@@ -49,6 +50,10 @@ class BeansTypeFragment : Fragment() {
         }
         photoFile = beansTypeDataManager.getPhotoFile(beansType)
         setHasOptionsMenu(true)
+    }
+
+    private fun inject() {
+        MyApplication.get(context).getAppComponent().inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
