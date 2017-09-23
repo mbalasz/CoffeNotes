@@ -41,7 +41,7 @@ class BeansTypeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MyApplication.myAppComponent.inject(this)
+        (activity.application as MyApplication).getAppComponent().inject(this)
         val args = arguments
         if (args != null) {
             val beansTypeId = arguments.getSerializable(ARG_BEANS_TYPE_ID) as UUID

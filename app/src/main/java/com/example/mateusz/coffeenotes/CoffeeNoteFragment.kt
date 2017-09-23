@@ -34,7 +34,7 @@ class CoffeeNoteFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MyApplication.myAppComponent.inject(this)
+        (activity.application as MyApplication).getAppComponent().inject(this)
         
         // TODO implement restoring coffee note from saved instance state.
         coffeeNote = CoffeeNote()

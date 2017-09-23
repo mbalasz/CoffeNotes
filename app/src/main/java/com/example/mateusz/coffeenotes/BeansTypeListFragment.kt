@@ -25,7 +25,7 @@ class BeansTypeListFragment : EditableListFragment<BeansType>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MyApplication.myAppComponent.inject(this);
+        (activity.application as MyApplication).getAppComponent().inject(this)
         val args = arguments
         if (args != null) {
             if (args.containsKey(ARG_HIGHLIGHTED_BEANS_TYPE_ID)) {

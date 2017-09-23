@@ -4,16 +4,19 @@ import android.app.Application
 import android.content.Context
 
 open class MyApplication : Application() {
-    companion object {
-        lateinit var myAppComponent: MyAppComponent
-    }
+    private lateinit var myAppComponent: MyAppComponent
 
     override fun onCreate() {
         super.onCreate()
-        myAppComponent = DaggerMyAppComponent.builder().myAppModule(MyAppModule(this)).build()
+        myAppComponent = createGraph()
     }
 
-    open fun getAppComponent(): MyAppComponent {
+    open fun createGraph(): MyAppComponent {
+        return DaggerMyAppComponent.builder().myAppModule(MyAppModule(this)).build()
+    }
+
+    fun getAppComponent(): MyAppComponent {
         return myAppComponent
     }
+
 }

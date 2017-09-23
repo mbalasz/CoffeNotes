@@ -1,6 +1,8 @@
 package com.example.mateusz.coffeenotes
 
 import android.support.v7.widget.RecyclerView
+import com.example.mateusz.coffeenotes.application.MyAppComponent
+import com.example.mateusz.coffeenotes.application.MyApplication
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
 import org.junit.Before
 import org.junit.Test
@@ -16,16 +18,16 @@ import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowView.clickOn
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class, application = TestMyApplication::class)
+@Config(constants = BuildConfig::class, application = TestApplication::class)
 class BeansTypeListActivityTest {
 
     @Mock lateinit var mockBeansTypeDataManager: BeansTypeDataManager
-    val application: TestMyApplication = RuntimeEnvironment.application as TestMyApplication
-    val appComponent: TestMyAppComponent = application.getAppComponent() as TestMyAppComponent
+    val appComponent: MyAppComponent =
+            (RuntimeEnvironment.application as MyApplication).getAppComponent()
 
     @Before
     fun setUp() {
-        mockBeansTypeDataManager = appComponent.mockBeansTypeDataManager
+        mockBeansTypeDataManager = appComponent.dataManager()
     }
 
     @Test
