@@ -16,11 +16,15 @@ import android.widget.Toast
 import java.util.UUID
 
 import android.app.Activity.RESULT_OK
-import butterknife.bindView
 import com.example.mateusz.coffeenotes.application.MyApplication
+import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
+import kotterknife.bindView
+import javax.inject.Inject
 
 class CoffeeNoteFragment : Fragment() {
     private val SELECT_COFFEE_BEANS_TYPE_REQUEST = 1
+
+    @Inject lateinit var beansTypeDataManager: BeansTypeDataManager
 
     private var coffeeNote: CoffeeNote? = null
     private val coffeeTypeSpinner: Spinner by bindView(R.id.coffee_type_spinner)
@@ -30,6 +34,7 @@ class CoffeeNoteFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MyApplication.myAppComponent.inject(this)
         
         // TODO implement restoring coffee note from saved instance state.
         coffeeNote = CoffeeNote()
@@ -53,12 +58,7 @@ class CoffeeNoteFragment : Fragment() {
                 val selectedBeansTypeId =
                         data.getSerializableExtra(
                                 BeansTypeListActivity.EXTRA_SELECTED_BEANS_TYPE_ID) as UUID
-                val selectedBeansType =
-                        MyApplication
-                                .get(context)
-                                .getAppComponent()
-                                .beansTypeDataManager
-                                .getBeansTypeById(selectedBeansTypeId)
+                val selectedBeansType = beansTypeDataManager.getBeansTypeById(selectedBeansTypeId)
                 coffeeNote?.beansType = selectedBeansType
                 updateBeansTypeCardViewUi()
             }

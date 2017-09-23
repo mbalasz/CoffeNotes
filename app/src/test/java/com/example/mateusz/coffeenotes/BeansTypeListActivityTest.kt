@@ -1,7 +1,6 @@
 package com.example.mateusz.coffeenotes
 
 import android.support.v7.widget.RecyclerView
-import com.example.mateusz.coffeenotes.application.TestMyAppComponent
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
 import org.junit.Before
 import org.junit.Test

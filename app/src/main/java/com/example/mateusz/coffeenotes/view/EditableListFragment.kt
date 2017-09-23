@@ -7,8 +7,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.ImageButton
-import butterknife.bindView
 import com.example.mateusz.coffeenotes.R
+import kotterknife.bindView
 
 /**
  * Base class for Fragments which show a list of items.

@@ -13,10 +13,11 @@ import com.example.mateusz.coffeenotes.application.MyApplication
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
 import com.example.mateusz.coffeenotes.view.ContentViewHolder
 import com.example.mateusz.coffeenotes.view.EditableListFragment
+import javax.inject.Inject
 
 class BeansTypeListFragment : EditableListFragment<BeansType>() {
 
-    lateinit var beansTypeDataManager: BeansTypeDataManager
+    @Inject lateinit var beansTypeDataManager: BeansTypeDataManager
 
     private var highlightedBeansTypeId: UUID? = null
 
@@ -24,7 +25,7 @@ class BeansTypeListFragment : EditableListFragment<BeansType>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        inject()
+        MyApplication.myAppComponent.inject(this);
         val args = arguments
         if (args != null) {
             if (args.containsKey(ARG_HIGHLIGHTED_BEANS_TYPE_ID)) {
@@ -33,9 +34,6 @@ class BeansTypeListFragment : EditableListFragment<BeansType>() {
         }
     }
 
-    private fun inject() {
-        MyApplication.get(context).getAppComponent().inject(this)
-    }
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         try {

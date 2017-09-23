@@ -1,22 +1,15 @@
 package com.example.mateusz.coffeenotes.application
 
-import android.content.Context
 import com.example.mateusz.coffeenotes.BeansTypeFragment
 import com.example.mateusz.coffeenotes.BeansTypeListFragment
-import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
-import com.example.mateusz.coffeenotes.database.BeansTypeDataManagerImpl
-import com.example.mateusz.coffeenotes.database.MainDatabaseHelper
+import com.example.mateusz.coffeenotes.CoffeeNoteFragment
+import dagger.Component
 
-open class MyAppComponent(private val context: Context) {
-    val beansTypeDataManager: BeansTypeDataManager by lazy {
-        BeansTypeDataManagerImpl(context, MainDatabaseHelper(context))
-    }
+@Component(modules = arrayOf(MyAppModule::class))
+interface MyAppComponent {
+    fun inject(beansTypeFragment: BeansTypeFragment)
 
-    open fun inject(beansTypeFragment: BeansTypeFragment) {
-        beansTypeFragment.beansTypeDataManager = beansTypeDataManager
-    }
+    fun inject(beansTypeListFragment: BeansTypeListFragment)
 
-    open fun inject(beansTypeListFragment: BeansTypeListFragment) {
-        beansTypeListFragment.beansTypeDataManager = beansTypeDataManager
-    }
+    fun inject(coffeeNoteFragment: CoffeeNoteFragment)
 }
