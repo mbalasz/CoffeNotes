@@ -20,6 +20,10 @@ class FragmentTestRule<T: Fragment>(val fragmentClass: Class<T>) : TestRule {
         }
     }
 
+    fun getFragment(): Fragment? {
+        return FragmentTestActivity.fragment
+    }
+
     private fun setUpActivity() {
         FragmentTestActivity.fragment = fragmentClass.newInstance()
         activityController =

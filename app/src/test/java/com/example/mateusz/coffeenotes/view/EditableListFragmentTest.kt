@@ -1,9 +1,12 @@
-package com.example.mateusz.coffeenotes
+package com.example.mateusz.coffeenotes.view
 
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Button
-import com.example.mateusz.coffeenotes.view.ContentViewHolder
-import com.example.mateusz.coffeenotes.view.EditableListFragment
+import com.example.mateusz.coffeenotes.BuildConfig
+import com.example.mateusz.coffeenotes.FragmentTestActivity
+import com.example.mateusz.coffeenotes.FragmentTestRule
+import com.example.mateusz.coffeenotes.R
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -56,6 +59,29 @@ class EditableListFragmentTest {
         assertEditModeIsDisplayed(false)
     }
 
+    @Test
+    fun listIsPopulatedOnStartup() {
+        val fragment = activityRule.getFragment() as EditableListFragmentForTest
+        assertRecyclerViewContainsExactly(fragment.dataListForTest)
+    }
+
+    @Test
+    fun removeItem() {
+        val fragment = activityRule.getFragment() as EditableListFragmentForTest
+        val recyclerView = activity.findViewById(R.id.recycler_view) as RecyclerView
+        val layoutManager = recyclerView.layoutManager
+        val initList = listOf(1, 2, 3, 4)
+        fragment.setDataList(initList)
+        assertThat(recyclerView.adapter.itemCount).isEqualTo(initList.size)
+
+        clickView(R.id.menu_item_list_start_edit)
+        val recyclerViewItem = layoutManager.findViewByPosition(0)
+        ShadowView.clickOn(recyclerViewItem.findViewById(R.id.item_row_remove_button))
+
+        assertThat(recyclerView.adapter.itemCount).isEqualTo(initList.size - 1)
+        assertRecyclerViewContainsExactly(listOf(2, 3, 4))
+    }
+
     private fun clickView(viewId: Int) {
         ShadowView.clickOn(activity.findViewById(viewId))
     }
@@ -80,16 +106,40 @@ class EditableListFragmentTest {
         }
     }
 
+    private fun assertRecyclerViewContainsExactly(testList: List<Int>) {
+        val layoutManager =
+                (activity.findViewById(R.id.recycler_view) as RecyclerView).layoutManager
+
+        for (idx in 0..testList.size - 1) {
+            val itemButton =
+                    layoutManager.findViewByPosition(idx)
+                            .findViewWithTag(EditableListFragmentForTest.BUTTON_TAG) as Button
+            assertThat(itemButton.text).isEqualTo(testList[idx].toString())
+        }
+    }
+
     class EditableListFragmentForTest : EditableListFragment<Int>() {
+        companion object {
+            val BUTTON_TAG = "testButton"
+        }
+
+        var dataListForTest = mutableListOf<Int>()
+
+        fun setDataList(dataList: List<Int>) {
+            dataListForTest = dataList.toMutableList()
+            adapter.setDataList(dataListForTest)
+            adapter.notifyDataSetChanged()
+        }
 
         override fun getDataList(): List<Int> {
-            return listOf(1, 2, 3, 4)
+            return dataListForTest
         }
 
         override fun createContentViewHolder(): ContentViewHolder<Int> {
             return object : ContentViewHolder<Int>() {
                 private val button: Button = Button(context)
                 init {
+                    button.tag = BUTTON_TAG
                     view = button
                 }
 
@@ -103,6 +153,11 @@ class EditableListFragmentTest {
             }
         }
 
-        override fun onRemoveContentViewHolder(contentViewHolder: ContentViewHolder<Int>) {}
+        override fun onRemoveContentViewHolder(contentViewHolder: ContentViewHolder<Int>) {
+            // TODO: remove this tight coupling to the data manager. Create a recyclerView,
+            // which operates on Cursor instead.
+            dataListForTest.remove(contentViewHolder.data)
+            adapter.setDataList(dataListForTest)
+        }
     }
 }
