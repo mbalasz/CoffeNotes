@@ -9,5 +9,10 @@ class EspressoUtil private constructor() {
         fun clickView(viewId: Int) {
             onView(withId(viewId)).perform(click())
         }
+
+        fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher {
+            return RecyclerViewMatcher(recyclerViewId)
+        }
+
     }
 }
