@@ -1,33 +1,30 @@
 package com.example.mateusz.coffeenotes
 
-import android.support.test.espresso.Espresso.*
-import android.support.test.espresso.UiController
-import android.support.test.espresso.ViewAction
-import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.assertion.ViewAssertions.doesNotExist
-import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.contrib.RecyclerViewActions
-import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
-import android.support.test.espresso.matcher.ViewMatchers.withId
-import android.support.test.runner.AndroidJUnit4
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Button
 import com.example.mateusz.coffeenotes.view.ContentViewHolder
 import com.example.mateusz.coffeenotes.view.EditableListFragment
-import org.hamcrest.Matcher
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowView
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(RobolectricTestRunner::class)
+@Config(constants = BuildConfig::class)
 class EditableListFragmentTest {
 
     @Rule @JvmField
     val activityRule = FragmentTestRule(EditableListFragmentForTest::class.java)
+    val activity: FragmentTestActivity by lazy {
+        activityRule.activityController.get()
+    }
 
     @Test
     fun editModeItemsHiddenByDefault() {
+        assertViewIsDisplayed(R.id.menu_item_list_start_edit)
         assertEditModeIsDisplayed(false)
     }
 
@@ -35,6 +32,7 @@ class EditableListFragmentTest {
     fun clickEditMenuItem_TurnsOnEditMode() {
         clickView(R.id.menu_item_list_start_edit)
 
+        assertViewDoesNotExist(R.id.menu_item_list_start_edit)
         assertEditModeIsDisplayed(true)
     }
 
@@ -43,6 +41,8 @@ class EditableListFragmentTest {
         clickView(R.id.menu_item_list_start_edit)
 
         clickView(R.id.menu_item_list_finish_edit)
+
+        assertViewIsDisplayed(R.id.menu_item_list_start_edit)
         assertEditModeIsDisplayed(false)
     }
 
@@ -51,16 +51,23 @@ class EditableListFragmentTest {
         clickView(R.id.menu_item_list_start_edit)
 
         clickView(R.id.menu_item_list_new_item)
+
+        assertViewIsDisplayed(R.id.menu_item_list_start_edit)
         assertEditModeIsDisplayed(false)
     }
 
-    @Test
-    fun clickDeleteButton_inEditMode_removesItem() {
-        onView(withId(R.id.menu_item_list_start_edit)).perform(click())
+    private fun clickView(viewId: Int) {
+        ShadowView.clickOn(activity.findViewById(viewId))
+    }
 
-        onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                        0, clickChildViewWithId(R.id.item_row_remove_button)))
+    private fun assertViewIsDisplayed(viewId: Int) {
+        val view = activity.findViewById(viewId)
+        assertThat(view).isNotNull()
+        assertThat(view.visibility).isEqualTo(View.VISIBLE)
+    }
+
+    private fun assertViewDoesNotExist(viewId: Int) {
+        assertThat(activity.findViewById(viewId)).isNull()
     }
 
     private fun assertEditModeIsDisplayed(isDisplayed: Boolean) {
@@ -70,38 +77,6 @@ class EditableListFragmentTest {
         } else {
             assertViewDoesNotExist(R.id.menu_item_list_finish_edit)
             assertViewDoesNotExist(R.id.menu_item_list_new_item)
-        }
-    }
-
-    private fun assertViewDoesNotExist(viewId: Int) {
-        onView(withId(viewId)).check(doesNotExist())
-    }
-
-    private fun assertViewIsDisplayed(viewId: Int) {
-        onView(withId(viewId)).check(matches(isDisplayed()))
-    }
-
-    private fun clickView(viewId: Int) {
-        onView(withId(viewId)).perform(click())
-    }
-
-    companion object {
-        fun clickChildViewWithId(resourceId: Int) : ViewAction {
-            return object : ViewAction {
-                override fun getDescription(): String {
-                    return "Click child view with id $resourceId"
-                }
-
-                override fun getConstraints(): Matcher<View>? {
-                    return null
-                }
-
-                override fun perform(uiController: UiController?, view: View) {
-                    val childView = view.findViewById(resourceId)
-                    childView.performClick()
-                }
-
-            }
         }
     }
 

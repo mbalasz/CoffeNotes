@@ -9,14 +9,15 @@ import android.view.MenuItem
 import android.widget.TextView
 import java.util.UUID
 import android.app.Activity.RESULT_OK
+import com.example.mateusz.coffeenotes.application.MyApplication
+import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
 import com.example.mateusz.coffeenotes.view.ContentViewHolder
 import com.example.mateusz.coffeenotes.view.EditableListFragment
+import javax.inject.Inject
 
 class BeansTypeListFragment : EditableListFragment<BeansType>() {
 
-    private val beansTypeDataManager: BeansTypeDataManager by lazy {
-        BeansTypeDataManager.instance(context)
-    }
+    @Inject lateinit var beansTypeDataManager: BeansTypeDataManager
 
     private var highlightedBeansTypeId: UUID? = null
 
@@ -24,6 +25,7 @@ class BeansTypeListFragment : EditableListFragment<BeansType>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (activity.application as MyApplication).getAppComponent().inject(this)
         val args = arguments
         if (args != null) {
             if (args.containsKey(ARG_HIGHLIGHTED_BEANS_TYPE_ID)) {

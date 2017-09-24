@@ -1,21 +1,21 @@
-package com.example.mateusz.coffeenotes
+package com.example.mateusz.coffeenotes.database
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
 import android.os.Environment
-import com.example.mateusz.coffeenotes.database.BeansTypeCursorWrapper
-import com.example.mateusz.coffeenotes.database.MainDatabaseHelper
+import com.example.mateusz.coffeenotes.BeansType
 import com.example.mateusz.coffeenotes.database.MainDbSchema.*
 import java.io.File
 import java.util.ArrayList
 import java.util.UUID
 
-class BeansTypeDataManager private constructor(val context: Context) {
-    val dataBase: SQLiteDatabase = MainDatabaseHelper(context).writableDatabase
-
-    fun getBeansTypes(): List<BeansType> {
+class BeansTypeDataManagerImpl(private val context: Context, dbHelper: SQLiteOpenHelper):
+        BeansTypeDataManager {
+    private val dataBase: SQLiteDatabase = dbHelper.writableDatabase
+    override fun getBeansTypes(): List<BeansType> {
         val beansTypes: MutableList<BeansType> = ArrayList()
         val cursor = queryBeansTypes(null, null)
 
@@ -30,7 +30,7 @@ class BeansTypeDataManager private constructor(val context: Context) {
         return beansTypes.toList()
     }
 
-    fun getBeansTypeById(id: UUID): BeansType? {
+    override fun getBeansTypeById(id: UUID): BeansType? {
         val cursor = queryBeansTypes(
                 "${BeansTypeTable.Cols.UUID} = ?",
                 arrayOf(id.toString()))
@@ -44,7 +44,7 @@ class BeansTypeDataManager private constructor(val context: Context) {
         }
     }
 
-    fun saveBeansType(beansType: BeansType) {
+    override fun saveBeansType(beansType: BeansType) {
         if (getBeansTypeById(beansType.id) == null) {
             addBeansType(beansType)
         } else {
@@ -52,14 +52,14 @@ class BeansTypeDataManager private constructor(val context: Context) {
         }
     }
 
-    fun removeBeansType(beansType: BeansType) {
+    override fun removeBeansType(beansType: BeansType) {
         dataBase.delete(
                 BeansTypeTable.NAME,
                 "${BeansTypeTable.Cols.UUID} = ?",
                 arrayOf(beansType.id.toString()))
     }
 
-    fun getPhotoFile(beansType: BeansType): File {
+    override fun getPhotoFile(beansType: BeansType): File {
         return File(
                 context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                 beansType.photoFileName)
@@ -108,18 +108,5 @@ class BeansTypeDataManager private constructor(val context: Context) {
         contentValues.put(BeansTypeTable.Cols.COUNTRY, beansType.country)
         contentValues.put(BeansTypeTable.Cols.ROAST_LEVEL, beansType.roastLevel)
         return contentValues
-    }
-
-    companion object {
-        lateinit var context: Context
-
-        fun instance(context: Context): BeansTypeDataManager {
-            this.context = context
-            return instance
-        }
-
-        private val instance: BeansTypeDataManager by lazy {
-            BeansTypeDataManager(context)
-        }
     }
 }
