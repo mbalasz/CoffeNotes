@@ -51,11 +51,12 @@ abstract class EditableListFragment<T: Any> : Fragment() {
         this.menu = menu!!
     }
 
-    open protected fun setEditMode(enabled: Boolean) {
+    protected fun setEditMode(enabled: Boolean) {
         isInEditMode = enabled
         menu.findItem(R.id.menu_item_list_start_edit).isVisible = !enabled
         menu.findItem(R.id.menu_item_list_finish_edit).isVisible = enabled
         menu.findItem(R.id.menu_item_list_new_item).isVisible = enabled
+        adapter.notifyDataSetChanged()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

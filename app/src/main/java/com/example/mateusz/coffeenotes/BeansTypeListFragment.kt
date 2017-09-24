@@ -71,11 +71,6 @@ class BeansTypeListFragment : EditableListFragment<BeansType>() {
         fun onBeansTypeSelected(beansType: BeansType)
     }
 
-    override fun setEditMode(enabled: Boolean) {
-        super.setEditMode(enabled)
-        adapter.notifyDataSetChanged()
-    }
-
     override fun getDataList(): List<BeansType> {
         return beansTypeDataManager.getBeansTypes()
     }
