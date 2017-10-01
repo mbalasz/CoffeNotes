@@ -5,12 +5,11 @@ import android.widget.EditText
 import com.example.mateusz.coffeenotes.application.MyApplication
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
 import com.nhaarman.mockito_kotlin.argumentCaptor
+import com.nhaarman.mockito_kotlin.verify
 import org.assertj.core.api.Assertions.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
@@ -21,7 +20,7 @@ import org.robolectric.shadows.ShadowView
 @Config(constants = BuildConfig::class, application = TestApplication::class)
 class BeansTypeFragmentTest {
 
-    @Mock lateinit var beansTypeDataManager: BeansTypeDataManager
+    lateinit var beansTypeDataManager: BeansTypeDataManager
     val appComponent = (RuntimeEnvironment.application as MyApplication).getAppComponent()
 
     @Before
@@ -42,7 +41,7 @@ class BeansTypeFragmentTest {
         ShadowView.clickOn(activity.findViewById(R.id.menu_item_save))
 
         argumentCaptor<BeansType>().apply {
-            Mockito.verify(beansTypeDataManager).saveBeansType(capture())
+            verify(beansTypeDataManager).saveBeansType(capture())
             assertThat(firstValue.copy(id = testBeansType.id, photoFileName = testBeansType.photoFileName)).isEqualTo(testBeansType)
         }
 

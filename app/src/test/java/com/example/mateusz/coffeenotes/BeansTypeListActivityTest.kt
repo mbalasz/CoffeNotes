@@ -4,14 +4,13 @@ import android.support.v7.widget.RecyclerView
 import com.example.mateusz.coffeenotes.application.MyAppComponent
 import com.example.mateusz.coffeenotes.application.MyApplication
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.assertj.core.api.Assertions.assertThat
-import org.mockito.Mock
-import org.mockito.Mockito
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.*
 import org.robolectric.annotation.Config
@@ -21,7 +20,7 @@ import org.robolectric.shadows.ShadowView.clickOn
 @Config(constants = BuildConfig::class, application = TestApplication::class)
 class BeansTypeListActivityTest {
 
-    @Mock lateinit var mockBeansTypeDataManager: BeansTypeDataManager
+    lateinit var mockBeansTypeDataManager: BeansTypeDataManager
     val appComponent: MyAppComponent =
             (RuntimeEnvironment.application as MyApplication).getAppComponent()
 
@@ -46,7 +45,7 @@ class BeansTypeListActivityTest {
     @Test
     fun clickListItem_inEditMode_startBeansTypeActivity() {
         val beansType = BeansType()
-        Mockito.`when`(mockBeansTypeDataManager.getBeansTypes()).thenReturn(listOf(beansType))
+        whenever(mockBeansTypeDataManager.getBeansTypes()).thenReturn(listOf(beansType))
         val activity = createActivity()
         val recyclerView = activity.findViewById(R.id.recycler_view) as RecyclerView
 

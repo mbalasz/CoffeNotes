@@ -16,7 +16,6 @@ import com.example.mateusz.coffeenotes.EspressoUtil.Companion.withRecyclerView
 import com.example.mateusz.coffeenotes.application.MyApplication
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
 import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.allOf
 import org.junit.*
 import org.junit.runner.RunWith
 
