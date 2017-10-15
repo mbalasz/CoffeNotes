@@ -3,7 +3,8 @@ package com.example.mateusz.coffeenotes.database
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.mateusz.coffeenotes.database.MainDbSchema.*
+import com.example.mateusz.coffeenotes.database.MainDbSchema.BeansTypeTable
+import com.example.mateusz.coffeenotes.database.MainDbSchema.CoffeeNotesTable
 
 class MainDatabaseHelper(context: Context)
     : SQLiteOpenHelper(context, DATABASE_NAME, null, VERSION) {
@@ -28,7 +29,8 @@ class MainDatabaseHelper(context: Context)
                 """
                 create table ${CoffeeNotesTable.NAME}(
                 ${CoffeeNotesTable.Cols.UUID},
-                ${CoffeeNotesTable.Cols.TITLE}
+                ${CoffeeNotesTable.Cols.TITLE},
+                ${CoffeeNotesTable.Cols.BEANS_TYPE_ID}
                 )
                 """
         )

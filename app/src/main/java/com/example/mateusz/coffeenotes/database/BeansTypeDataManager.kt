@@ -1,10 +1,19 @@
 package com.example.mateusz.coffeenotes.database
 
 import com.example.mateusz.coffeenotes.BeansType
+import com.example.mateusz.coffeenotes.CoffeeNote
 import java.io.File
 import java.util.*
 
 interface BeansTypeDataManager {
+    fun getCoffeeNotes(): List<CoffeeNote>
+
+    fun getCoffeeNoteById(id: UUID): CoffeeNote?
+
+    fun saveCoffeeNote(coffeeNote: CoffeeNote)
+
+    fun removeCoffeeNote(coffeeNote: CoffeeNote)
+
     fun getBeansTypes(): List<BeansType>
 
     fun getBeansTypeById(id: UUID): BeansType?

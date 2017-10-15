@@ -1,5 +1,6 @@
 package com.example.mateusz.coffeenotes
 
+import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
@@ -7,12 +8,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.widget.TextView
-import java.util.UUID
-import android.app.Activity.RESULT_OK
 import com.example.mateusz.coffeenotes.application.MyApplication
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
 import com.example.mateusz.coffeenotes.view.ContentViewHolder
 import com.example.mateusz.coffeenotes.view.EditableListFragment
+import java.util.*
 import javax.inject.Inject
 
 class BeansTypeListFragment : EditableListFragment<BeansType>() {
@@ -63,8 +63,7 @@ class BeansTypeListFragment : EditableListFragment<BeansType>() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == EDIT_BEANS_TYPE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                adapter.setDataList(beansTypeDataManager.getBeansTypes())
-                adapter.notifyDataSetChanged()
+                notifyDataChanged()
             }
         }
     }

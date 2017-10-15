@@ -1,7 +1,7 @@
 package com.example.mateusz.coffeenotes.view
 
-import android.support.v4.app.Fragment
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -75,6 +75,11 @@ abstract class EditableListFragment<T: Any> : Fragment() {
             }
             else -> return super.onOptionsItemSelected(item)
         }
+    }
+
+    protected fun notifyDataChanged() {
+        adapter.setDataList(getDataList())
+        adapter.notifyDataSetChanged()
     }
 
     protected abstract fun getDataList(): List<T>

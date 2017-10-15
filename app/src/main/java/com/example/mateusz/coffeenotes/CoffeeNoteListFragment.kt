@@ -2,22 +2,30 @@ package com.example.mateusz.coffeenotes
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.view.*
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.MenuItem
 import android.widget.TextView
+import com.example.mateusz.coffeenotes.application.MyApplication
+import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
 import com.example.mateusz.coffeenotes.view.ContentViewHolder
 import com.example.mateusz.coffeenotes.view.EditableListFragment
+import javax.inject.Inject
 
 class CoffeeNoteListFragment : EditableListFragment<CoffeeNote>() {
 
-    private val coffeeNoteDataManager: CoffeeNoteDataManager by lazy {
-        CoffeeNoteDataManager.instance(context)
+    @Inject lateinit var beansTypeDataManager: BeansTypeDataManager
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (context.applicationContext as MyApplication).getAppComponent().inject(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_EDIT_COFFEE_NOTE -> {
                 if (resultCode == RESULT_OK) {
-                    adapter.notifyDataSetChanged()
+                    notifyDataChanged()
                 }
             }
         }
@@ -36,7 +44,7 @@ class CoffeeNoteListFragment : EditableListFragment<CoffeeNote>() {
     }
 
     override fun getDataList(): List<CoffeeNote> {
-        return coffeeNoteDataManager.getCoffeeNotes()
+        return beansTypeDataManager.getCoffeeNotes()
     }
 
     override fun createContentViewHolder(): ContentViewHolder<CoffeeNote> {
@@ -45,7 +53,7 @@ class CoffeeNoteListFragment : EditableListFragment<CoffeeNote>() {
 
             init {
                 val inflater = LayoutInflater.from(context)
-                val view = inflater.inflate(R.layout.item_coffee_note_content_view, null, false)
+                view = inflater.inflate(R.layout.item_coffee_note_content_view, null, false)
 
                 coffeeNoteNameTextView =
                         view.findViewById(R.id.item_coffee_note_row_name_text_view) as TextView
