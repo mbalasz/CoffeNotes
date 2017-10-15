@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import com.example.mateusz.coffeenotes.database.CoffeeNotesCursorWrapper
 import com.example.mateusz.coffeenotes.database.MainDatabaseHelper
 import com.example.mateusz.coffeenotes.database.MainDbSchema
-import java.util.ArrayList
+import java.util.*
 
 class CoffeeNoteDataManager private constructor(context: Context) {
     // TODO: make this and BeansTypeDataManagerImpl a subclass of an abstract DataManager.

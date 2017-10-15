@@ -1,7 +1,6 @@
 package com.example.mateusz.coffeenotes.application
 
 import android.app.Application
-import android.content.Context
 
 open class MyApplication : Application() {
     private lateinit var myAppComponent: MyAppComponent
