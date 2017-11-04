@@ -5,11 +5,12 @@ import com.example.mateusz.coffeenotes.BeansTypeListFragment
 import com.example.mateusz.coffeenotes.CoffeeNoteFragment
 import com.example.mateusz.coffeenotes.CoffeeNoteListFragment
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
+import com.example.mateusz.coffeenotes.database.DateHelper
 import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = arrayOf(MyAppModule::class))
+@Component(modules = arrayOf(MyAppModule::class, DateModule::class))
 interface MyAppComponent {
     fun inject(beansTypeFragment: BeansTypeFragment)
 

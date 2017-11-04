@@ -31,6 +31,7 @@ class MainDatabaseHelper(context: Context)
                 ${CoffeeNotesTable.Cols.UUID},
                 ${CoffeeNotesTable.Cols.TITLE},
                 ${CoffeeNotesTable.Cols.BEANS_TYPE_ID}
+                ${CoffeeNotesTable.Cols.DATE}
                 )
                 """
         )

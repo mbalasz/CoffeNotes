@@ -1,6 +1,7 @@
 package com.example.mateusz.coffeenotes
 
 import android.app.Activity.RESULT_OK
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -12,14 +13,17 @@ import android.view.*
 import android.widget.*
 import com.example.mateusz.coffeenotes.application.MyApplication
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
+import com.example.mateusz.coffeenotes.database.DateHelper
 import kotterknife.bindView
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class CoffeeNoteFragment : Fragment() {
+class CoffeeNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     private val SELECT_COFFEE_BEANS_TYPE_REQUEST = 1
 
     @Inject lateinit var beansTypeDataManager: BeansTypeDataManager
+    @Inject lateinit var dateHelper: DateHelper
 
     private lateinit var onCoffeeNoteEditFinishedListener: OnCoffeeNoteEditFinishedListener
 
@@ -29,6 +33,10 @@ class CoffeeNoteFragment : Fragment() {
     private val beansTypeCardView: CardView by bindView(R.id.beans_type_card_view)
     private val beansNameTextView: TextView by bindView(R.id.beans_name_text_view)
     private val beansCountryTextView: TextView by bindView(R.id.beans_country_text_view)
+
+    private val calendar = Calendar.getInstance()
+    private lateinit var datePickerDialog: DatePickerDialog
+    private val dateButton: Button by bindView(R.id.date_picker_button)
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -48,11 +56,11 @@ class CoffeeNoteFragment : Fragment() {
         super.onCreate(savedInstanceState)
         (activity.application as MyApplication).getAppComponent().inject(this)
 
-        if (arguments != null) {
+        coffeeNote = if (arguments != null) {
             val coffeeNoteId = (arguments.getSerializable(ARGS_COFFEE_NOTE_ID) as UUID)
-            coffeeNote = beansTypeDataManager.getCoffeeNoteById(coffeeNoteId) ?: CoffeeNote()
+            beansTypeDataManager.getCoffeeNoteById(coffeeNoteId) ?: CoffeeNote()
         } else {
-            coffeeNote = CoffeeNote()
+            CoffeeNote()
         }
         setHasOptionsMenu(true)
     }
@@ -66,6 +74,7 @@ class CoffeeNoteFragment : Fragment() {
         initCoffeeNoteTitleEditText()
         initCoffeeTypeSpinner()
         initBeansTypeCardView()
+        initDatePicker()
         updateUi()
     }
 
@@ -150,6 +159,26 @@ class CoffeeNoteFragment : Fragment() {
         }
 
         updateBeansTypeCardViewUi()
+    }
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        calendar.set(year, month, dayOfMonth)
+        coffeeNote.date = calendar.time
+//        dateButton.text = dateHelper.dateToString(coffeeNote.date)
+    }
+
+    private fun initDatePicker() {
+        calendar.time = coffeeNote.date
+        datePickerDialog = DatePickerDialog(
+                context,
+                this,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH))
+        dateButton.setOnClickListener {
+            datePickerDialog.show()
+        }
+//        dateButton.text = dateHelper.dateToString(coffeeNote.date)
     }
 
     private fun updateBeansTypeCardViewUi() {

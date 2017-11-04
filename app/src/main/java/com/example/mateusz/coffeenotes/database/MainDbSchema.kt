@@ -19,6 +19,7 @@ class MainDbSchema {
             val UUID: String = "uuid"
             val TITLE: String = "title"
             val BEANS_TYPE_ID: String = "beans_type_id"
+            val DATE: String = "date"
         }
     }
 }

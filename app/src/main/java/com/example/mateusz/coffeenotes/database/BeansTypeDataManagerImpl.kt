@@ -13,15 +13,17 @@ import com.example.mateusz.coffeenotes.database.MainDbSchema.CoffeeNotesTable
 import java.io.File
 import java.util.*
 
-class BeansTypeDataManagerImpl(private val context: Context, dbHelper: SQLiteOpenHelper):
-        BeansTypeDataManager {
+class BeansTypeDataManagerImpl(
+        private val context: Context,
+        dbHelper: SQLiteOpenHelper,
+        private val dateHelper: DateHelper): BeansTypeDataManager {
     private val dataBase: SQLiteDatabase = dbHelper.writableDatabase
 
     override fun getCoffeeNotes(): List<CoffeeNote> {
         val cursor = queryCoffeeNote(null, null)
 
         return generateSequence { if (cursor.moveToNext()) cursor else null }
-                .map { cursor.getCoffeeNote()}
+                .map { cursor.getCoffeeNote(dateHelper)}
                 .toList()
     }
 
@@ -29,7 +31,7 @@ class BeansTypeDataManagerImpl(private val context: Context, dbHelper: SQLiteOpe
         val cursor = queryCoffeeNote("${CoffeeNotesTable.Cols.UUID} = ?", arrayOf(id.toString()))
 
         cursor.use {
-            if (cursor.moveToFirst()) return cursor.getCoffeeNote() else return null
+            if (cursor.moveToFirst()) return cursor.getCoffeeNote(dateHelper) else return null
         }
     }
 
@@ -160,6 +162,7 @@ class BeansTypeDataManagerImpl(private val context: Context, dbHelper: SQLiteOpe
         coffeeNote.beansTypeId?.let {
             contentValues.put(CoffeeNotesTable.Cols.BEANS_TYPE_ID, it.toString())
         }
+        contentValues.put(CoffeeNotesTable.Cols.DATE, dateHelper.dateToString(coffeeNote.date))
         return contentValues
     }
 }

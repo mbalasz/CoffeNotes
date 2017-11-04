@@ -8,4 +8,5 @@ data class CoffeeNote(
         var coffeeType: CoffeeType? = null,
         var beansTypeId: UUID? = null,
         var weight: Double = 0.0,
-        var grinderSettings: Double = 0.0)
+        var grinderSettings: Double = 0.0,
+        var date: Date = Calendar.getInstance().time)
