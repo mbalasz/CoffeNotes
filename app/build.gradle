@@ -3,7 +3,6 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "com.example.mateusz.coffeenotes"
         minSdkVersion 15
