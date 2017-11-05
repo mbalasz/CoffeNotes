@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="horizontal">
@@ -12,16 +12,16 @@
         <FrameLayout
             android:id="@+id/content_view_container"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center">
 
         </FrameLayout>
 
         <include layout="@layout/remove_button"
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
-                 android:layout_centerVertical="true"
-                 android:layout_alignParentEnd="true"
-                 android:layout_alignParentRight="true"/>
-    </RelativeLayout>
+                 android:layout_weight="0"/>
+    </LinearLayout>
 
 </RelativeLayout>

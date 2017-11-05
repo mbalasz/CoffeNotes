@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.widget.TextView
 import com.example.mateusz.coffeenotes.application.MyApplication
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
+import com.example.mateusz.coffeenotes.database.DateHelper
 import com.example.mateusz.coffeenotes.view.ContentViewHolder
 import com.example.mateusz.coffeenotes.view.EditableListFragment
 import javax.inject.Inject
@@ -15,6 +16,7 @@ import javax.inject.Inject
 class CoffeeNoteListFragment : EditableListFragment<CoffeeNote>() {
 
     @Inject lateinit var beansTypeDataManager: BeansTypeDataManager
+    @Inject lateinit var dateHelper: DateHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +52,7 @@ class CoffeeNoteListFragment : EditableListFragment<CoffeeNote>() {
     override fun createContentViewHolder(): ContentViewHolder<CoffeeNote> {
         return object : ContentViewHolder<CoffeeNote>() {
             private val coffeeNoteNameTextView: TextView
+            private val coffeeNoteDateTextView: TextView
 
             init {
                 val inflater = LayoutInflater.from(context)
@@ -57,6 +60,8 @@ class CoffeeNoteListFragment : EditableListFragment<CoffeeNote>() {
 
                 coffeeNoteNameTextView =
                         view.findViewById(R.id.item_coffee_note_row_name_text_view) as TextView
+                coffeeNoteDateTextView =
+                        view.findViewById(R.id.item_coffee_note_row_date_text_view) as TextView
             }
 
             override fun onClicked() {
@@ -67,6 +72,7 @@ class CoffeeNoteListFragment : EditableListFragment<CoffeeNote>() {
 
             override fun onUpdateView() {
                 coffeeNoteNameTextView.text = data.title
+                coffeeNoteDateTextView.text = dateHelper.dateToString(data.date)
             }
 
             override fun onRecycle() {}
