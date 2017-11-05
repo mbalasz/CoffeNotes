@@ -15,7 +15,6 @@ import com.example.mateusz.coffeenotes.application.MyApplication
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
 import com.example.mateusz.coffeenotes.database.DateHelper
 import kotterknife.bindView
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -164,7 +163,7 @@ class CoffeeNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         calendar.set(year, month, dayOfMonth)
         coffeeNote.date = calendar.time
-//        dateButton.text = dateHelper.dateToString(coffeeNote.date)
+        dateButton.text = dateHelper.dateToString(coffeeNote.date)
     }
 
     private fun initDatePicker() {
@@ -178,7 +177,7 @@ class CoffeeNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         dateButton.setOnClickListener {
             datePickerDialog.show()
         }
-//        dateButton.text = dateHelper.dateToString(coffeeNote.date)
+        dateButton.text = dateHelper.dateToString(coffeeNote.date)
     }
 
     private fun updateBeansTypeCardViewUi() {

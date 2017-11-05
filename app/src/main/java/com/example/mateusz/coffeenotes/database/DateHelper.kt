@@ -6,14 +6,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DateHelper @Inject constructor(var dateFormat: SimpleDateFormat) {
+class DateHelper @Inject constructor(private val dateFormat: SimpleDateFormat) {
     fun dateToString(date: Date): String {
-//        return dateFormat.format(date)
-        return String()
+        return dateFormat.format(date)
     }
 
     fun stringToDate(date: String): Date {
-//        return dateFormat.parse(date)
-        return Date()
+        return dateFormat.parse(date)
     }
 }

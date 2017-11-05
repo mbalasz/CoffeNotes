@@ -30,7 +30,7 @@ class MainDatabaseHelper(context: Context)
                 create table ${CoffeeNotesTable.NAME}(
                 ${CoffeeNotesTable.Cols.UUID},
                 ${CoffeeNotesTable.Cols.TITLE},
-                ${CoffeeNotesTable.Cols.BEANS_TYPE_ID}
+                ${CoffeeNotesTable.Cols.BEANS_TYPE_ID},
                 ${CoffeeNotesTable.Cols.DATE}
                 )
                 """

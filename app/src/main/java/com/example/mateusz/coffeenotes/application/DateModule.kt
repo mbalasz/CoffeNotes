@@ -11,7 +11,5 @@ import javax.inject.Singleton
 class DateModule {
     @Singleton
     @Provides
-    fun dateFormat(): SimpleDateFormat {
-        return SimpleDateFormat("yyyy-MM-dd", Locale.US)
-    }
+    fun dateFormat(): SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 }
