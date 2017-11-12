@@ -7,12 +7,13 @@ import com.example.mateusz.coffeenotes.database.MainDbSchema.*
 import java.util.*
 
 class BeansTypeCursorWrapper(cursor: Cursor) : CursorWrapper(cursor) {
-    fun getBeansType(): BeansType {
+    fun getBeansType(dateHelper: DateHelper): BeansType {
         val uuid = UUID.fromString(getString(getColumnIndex(BeansTypeTable.Cols.UUID)))
         val name = getString(getColumnIndex(BeansTypeTable.Cols.NAME))
         val country = getString(getColumnIndex(BeansTypeTable.Cols.COUNTRY))
         val roastLevel = getInt(getColumnIndex(BeansTypeTable.Cols.ROAST_LEVEL))
+        val date = dateHelper.stringToDate(getString(getColumnIndex(CoffeeNotesTable.Cols.DATE)))
 
-        return BeansType(uuid, name, country, roastLevel)
+        return BeansType(uuid, name, country, roastLevel, date = date)
     }
 }

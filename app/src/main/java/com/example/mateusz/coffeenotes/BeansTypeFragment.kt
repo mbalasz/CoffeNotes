@@ -7,35 +7,41 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.ProgressBar
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import java.io.File
 
-import java.util.UUID
 import android.os.Build
 import android.view.ViewTreeObserver
 import android.annotation.TargetApi
+import android.app.DatePickerDialog
 import android.support.v4.app.Fragment
+import android.widget.*
 import com.example.mateusz.coffeenotes.application.MyApplication
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
+import com.example.mateusz.coffeenotes.database.DateHelper
 import kotterknife.bindView
+import java.util.*
 import javax.inject.Inject
 
-class BeansTypeFragment : Fragment() {
+class BeansTypeFragment : Fragment(), DatePickerDialog.OnDateSetListener {
+
+    @Inject lateinit var beansTypeDataManager: BeansTypeDataManager
+    @Inject lateinit var dateHelper: DateHelper
+
     private lateinit var beansType: BeansType
     private val beansNameEditText: EditText by bindView(R.id.beans_name_edit_text)
     private val beansCountryEditText: EditText by bindView(R.id.beans_country_edit_text)
     private val roastLevelButton: Button by bindView(R.id.roast_level_button)
+    private val dateButton: Button by bindView(R.id.date_picker_button)
     private val beansPhotoImageView: ImageView by bindView(R.id.beans_photo_image_view)
     private val beansPhotoProgressBar: ProgressBar by bindView(R.id.beans_photo_progress_bar)
     private val takePhotoButton: Button by bindView(R.id.take_photo_button)
-    @Inject lateinit var beansTypeDataManager: BeansTypeDataManager
     private var photoFile: File? = null
+
+    private val calendar = Calendar.getInstance()
+    private lateinit var datePickerDialog: DatePickerDialog
 
     private lateinit var onBeansTypeEditFinishedListener: OnBeansTypeEditFinishedListener
 
@@ -78,6 +84,17 @@ class BeansTypeFragment : Fragment() {
                         removeOnGlobalLayoutListener(beansPhotoImageView, this)
                     }
                 })
+        calendar.time = beansType.date
+        datePickerDialog = DatePickerDialog(
+                context,
+                this,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH))
+        dateButton.setOnClickListener {
+            datePickerDialog.show()
+        }
+        dateButton.text = dateHelper.dateToString(beansType.date)
         updateUi()
     }
 
@@ -129,6 +146,12 @@ class BeansTypeFragment : Fragment() {
             }
             REQUEST_TAKE_PHOTO -> updatePhotoView()
         }
+    }
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        calendar.set(year, month, dayOfMonth)
+        beansType.date = calendar.time
+        dateButton.text = dateHelper.dateToString(beansType.date)
     }
 
     private fun onSaveBeansType() {

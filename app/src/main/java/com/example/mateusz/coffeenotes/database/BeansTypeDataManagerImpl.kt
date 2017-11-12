@@ -58,7 +58,7 @@ class BeansTypeDataManagerImpl(
         val cursor = queryBeansTypes(null, null)
 
         return generateSequence { if (cursor.moveToNext()) cursor else null }
-                .map { cursor.getBeansType()}
+                .map { cursor.getBeansType(dateHelper)}
                 .toList()
     }
 
@@ -68,7 +68,7 @@ class BeansTypeDataManagerImpl(
                 arrayOf(id.toString()))
 
         cursor.use {
-            if (cursor.moveToFirst()) return cursor.getBeansType() else return null
+            if (cursor.moveToFirst()) return cursor.getBeansType(dateHelper) else return null
         }
     }
 
@@ -152,6 +152,7 @@ class BeansTypeDataManagerImpl(
         contentValues.put(BeansTypeTable.Cols.NAME, beansType.name)
         contentValues.put(BeansTypeTable.Cols.COUNTRY, beansType.country)
         contentValues.put(BeansTypeTable.Cols.ROAST_LEVEL, beansType.roastLevel)
+        contentValues.put(BeansTypeTable.Cols.DATE, dateHelper.dateToString(beansType.date))
         return contentValues
     }
 

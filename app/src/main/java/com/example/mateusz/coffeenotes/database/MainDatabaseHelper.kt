@@ -20,7 +20,8 @@ class MainDatabaseHelper(context: Context)
                 ${BeansTypeTable.Cols.UUID},
                 ${BeansTypeTable.Cols.NAME},
                 ${BeansTypeTable.Cols.COUNTRY},
-                ${BeansTypeTable.Cols.ROAST_LEVEL}
+                ${BeansTypeTable.Cols.ROAST_LEVEL},
+                ${BeansTypeTable.Cols.DATE}
                 )
                 """
         )
