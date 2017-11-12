@@ -5,7 +5,6 @@ import android.widget.Button
 import android.widget.EditText
 import com.example.mateusz.coffeenotes.application.MyApplication
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
-import com.example.mateusz.coffeenotes.database.DateHelper
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
@@ -18,20 +17,21 @@ import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowView
 import android.app.DatePickerDialog
 import org.robolectric.shadows.ShadowDatePickerDialog
-import java.util.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
+import java.util.UUID
 
 @RunWith(RobolectricTestRunner::class)
 @Config(constants = BuildConfig::class, application = TestApplication::class)
 class BeansTypeActivityTest {
 
     private lateinit var beansTypeDataManager: BeansTypeDataManager
-    private lateinit var dateHelper: DateHelper
-    private val appComponent = (RuntimeEnvironment.application as MyApplication).getAppComponent() as TestComponent
+    private val appComponent =
+            (RuntimeEnvironment.application as MyApplication).getAppComponent() as TestComponent
 
     @Before
     fun setUp() {
         beansTypeDataManager = appComponent.dataManager()
-        dateHelper = appComponent.dateHelper()
     }
 
     @Test
@@ -40,14 +40,28 @@ class BeansTypeActivityTest {
         val name = "Test name"
         val country = "Test country"
         val roastLevel = 4
-        val date = Calendar.getInstance().time
+        val date = LocalDate.now()
         val testBeansType = BeansType(uuid, name, country, roastLevel, date = date)
-        //TODO: Migrate to https://github.com/JakeWharton/ThreeTenABP
         whenever(beansTypeDataManager.getBeansTypeById(uuid)).thenReturn(testBeansType)
 
-        val activity = Robolectric.setupActivity(BeansTypeActivity::class.java)
+        val activity =
+                Robolectric.buildActivity(
+                        BeansTypeActivity::class.java,
+                        BeansTypeActivity.newIntent(RuntimeEnvironment.application, uuid))
+                        .create()
+                        .start()
+                        .resume()
+                        .visible()
+                        .get()
 
-        assertThat((activity.findViewById(R.id.beans_name_edit_text) as EditText).text).isEqualTo(name)
+        assertThat((activity.findViewById(R.id.beans_name_edit_text) as EditText).text.toString())
+                .isEqualTo(name)
+        assertThat((activity.findViewById(R.id.beans_country_edit_text) as EditText).text.toString())
+                .isEqualTo(country)
+        assertThat((activity.findViewById(R.id.roast_level_button) as Button).text.toString())
+                .isEqualTo(roastLevel.toString())
+        assertThat((activity.findViewById(R.id.date_picker_button) as Button).text.toString())
+                .isEqualTo(date.format(DateTimeFormatter.ISO_LOCAL_DATE))
     }
 
     @Test
@@ -93,8 +107,11 @@ class BeansTypeActivityTest {
     }
 
     private fun createExampleBeansType(): BeansType {
-        val date = Calendar.getInstance().time
-        return BeansType(name = "Test name", country = "Test country", roastLevel = 1, date = date)
+        return BeansType(
+                name = "Test name",
+                country = "Test country",
+                roastLevel = 1,
+                date = LocalDate.now())
     }
 
     private fun fillData(activity: Activity, beansType: BeansType) {
@@ -104,14 +121,12 @@ class BeansTypeActivityTest {
         (activity.findViewById(R.id.roast_level_button) as Button).text =
                 beansType.roastLevel.toString()
 
-        val calendar = Calendar.getInstance()
-        calendar.time = beansType.date
         ShadowView.clickOn(activity.findViewById(R.id.date_picker_button))
         val dialog = ShadowDatePickerDialog.getLatestDialog() as DatePickerDialog
         dialog.updateDate(
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH))
+                beansType.date.year,
+                beansType.date.monthValue,
+                beansType.date.dayOfMonth)
         dialog.getButton(DatePickerDialog.BUTTON_POSITIVE).performClick()
     }
 }

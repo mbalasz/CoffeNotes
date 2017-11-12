@@ -20,15 +20,15 @@ import android.support.v4.app.Fragment
 import android.widget.*
 import com.example.mateusz.coffeenotes.application.MyApplication
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
-import com.example.mateusz.coffeenotes.database.DateHelper
 import kotterknife.bindView
-import java.util.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
+import java.util.UUID
 import javax.inject.Inject
 
 class BeansTypeFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     @Inject lateinit var beansTypeDataManager: BeansTypeDataManager
-    @Inject lateinit var dateHelper: DateHelper
 
     private lateinit var beansType: BeansType
     private val beansNameEditText: EditText by bindView(R.id.beans_name_edit_text)
@@ -40,7 +40,6 @@ class BeansTypeFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     private val takePhotoButton: Button by bindView(R.id.take_photo_button)
     private var photoFile: File? = null
 
-    private val calendar = Calendar.getInstance()
     private lateinit var datePickerDialog: DatePickerDialog
 
     private lateinit var onBeansTypeEditFinishedListener: OnBeansTypeEditFinishedListener
@@ -84,17 +83,16 @@ class BeansTypeFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                         removeOnGlobalLayoutListener(beansPhotoImageView, this)
                     }
                 })
-        calendar.time = beansType.date
+        val noteDate = beansType.date
         datePickerDialog = DatePickerDialog(
                 context,
                 this,
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH))
+                noteDate.year,
+                noteDate.monthValue,
+                noteDate.dayOfMonth)
         dateButton.setOnClickListener {
             datePickerDialog.show()
         }
-        dateButton.text = dateHelper.dateToString(beansType.date)
         updateUi()
     }
 
@@ -149,9 +147,8 @@ class BeansTypeFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        calendar.set(year, month, dayOfMonth)
-        beansType.date = calendar.time
-        dateButton.text = dateHelper.dateToString(beansType.date)
+        beansType.date = LocalDate.of(year, month, dayOfMonth)
+        updateDateButtonUi()
     }
 
     private fun onSaveBeansType() {
@@ -197,6 +194,11 @@ class BeansTypeFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         beansNameEditText.setText(beansType.name)
         beansCountryEditText.setText(beansType.country)
         roastLevelButton.text = beansType.roastLevel.toString()
+        updateDateButtonUi()
+    }
+
+    private fun updateDateButtonUi() {
+        dateButton.text = beansType.date.format(DateTimeFormatter.ISO_LOCAL_DATE)
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)

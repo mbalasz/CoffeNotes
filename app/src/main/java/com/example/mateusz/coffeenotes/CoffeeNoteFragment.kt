@@ -13,16 +13,16 @@ import android.view.*
 import android.widget.*
 import com.example.mateusz.coffeenotes.application.MyApplication
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
-import com.example.mateusz.coffeenotes.database.DateHelper
 import kotterknife.bindView
-import java.util.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
+import java.util.UUID
 import javax.inject.Inject
 
 class CoffeeNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     private val SELECT_COFFEE_BEANS_TYPE_REQUEST = 1
 
     @Inject lateinit var beansTypeDataManager: BeansTypeDataManager
-    @Inject lateinit var dateHelper: DateHelper
 
     private lateinit var onCoffeeNoteEditFinishedListener: OnCoffeeNoteEditFinishedListener
 
@@ -33,7 +33,6 @@ class CoffeeNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     private val beansNameTextView: TextView by bindView(R.id.beans_name_text_view)
     private val beansCountryTextView: TextView by bindView(R.id.beans_country_text_view)
 
-    private val calendar = Calendar.getInstance()
     private lateinit var datePickerDialog: DatePickerDialog
     private val dateButton: Button by bindView(R.id.date_picker_button)
 
@@ -161,23 +160,26 @@ class CoffeeNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        calendar.set(year, month, dayOfMonth)
-        coffeeNote.date = calendar.time
-        dateButton.text = dateHelper.dateToString(coffeeNote.date)
+        coffeeNote.date = LocalDate.of(year, month, dayOfMonth)
+        updateDateButtonText()
     }
 
     private fun initDatePicker() {
-        calendar.time = coffeeNote.date
+        val noteDate = coffeeNote.date
         datePickerDialog = DatePickerDialog(
                 context,
                 this,
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH))
+                noteDate.year,
+                noteDate.monthValue,
+                noteDate.dayOfMonth)
         dateButton.setOnClickListener {
             datePickerDialog.show()
         }
-        dateButton.text = dateHelper.dateToString(coffeeNote.date)
+        updateDateButtonText()
+    }
+
+    private fun updateDateButtonText() {
+        dateButton.text = coffeeNote.date.format(DateTimeFormatter.ISO_LOCAL_DATE)
     }
 
     private fun updateBeansTypeCardViewUi() {

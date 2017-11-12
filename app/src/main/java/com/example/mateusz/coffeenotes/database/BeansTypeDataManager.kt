@@ -3,7 +3,7 @@ package com.example.mateusz.coffeenotes.database
 import com.example.mateusz.coffeenotes.BeansType
 import com.example.mateusz.coffeenotes.CoffeeNote
 import java.io.File
-import java.util.*
+import java.util.UUID
 
 interface BeansTypeDataManager {
     fun getCoffeeNotes(): List<CoffeeNote>

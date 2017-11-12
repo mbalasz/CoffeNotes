@@ -7,6 +7,7 @@ import com.example.mateusz.coffeenotes.BuildConfig
 import com.example.mateusz.coffeenotes.FragmentTestActivity
 import com.example.mateusz.coffeenotes.FragmentTestRule
 import com.example.mateusz.coffeenotes.R
+import com.example.mateusz.coffeenotes.TestApplication
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -16,7 +17,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowView
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class)
+@Config(constants = BuildConfig::class, application = TestApplication::class)
 class EditableListFragmentTest {
 
     @Rule @JvmField

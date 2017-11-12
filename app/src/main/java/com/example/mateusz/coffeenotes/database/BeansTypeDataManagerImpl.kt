@@ -10,20 +10,21 @@ import com.example.mateusz.coffeenotes.BeansType
 import com.example.mateusz.coffeenotes.CoffeeNote
 import com.example.mateusz.coffeenotes.database.MainDbSchema.BeansTypeTable
 import com.example.mateusz.coffeenotes.database.MainDbSchema.CoffeeNotesTable
+import org.threeten.bp.format.DateTimeFormatter
 import java.io.File
-import java.util.*
+import java.util.UUID
 
 class BeansTypeDataManagerImpl(
         private val context: Context,
         dbHelper: SQLiteOpenHelper,
-        private val dateHelper: DateHelper): BeansTypeDataManager {
+        private val dateTimeFormatter: DateTimeFormatter): BeansTypeDataManager {
     private val dataBase: SQLiteDatabase = dbHelper.writableDatabase
 
     override fun getCoffeeNotes(): List<CoffeeNote> {
         val cursor = queryCoffeeNote(null, null)
 
         return generateSequence { if (cursor.moveToNext()) cursor else null }
-                .map { cursor.getCoffeeNote(dateHelper)}
+                .map { cursor.getCoffeeNote(dateTimeFormatter)}
                 .toList()
     }
 
@@ -31,7 +32,7 @@ class BeansTypeDataManagerImpl(
         val cursor = queryCoffeeNote("${CoffeeNotesTable.Cols.UUID} = ?", arrayOf(id.toString()))
 
         cursor.use {
-            if (cursor.moveToFirst()) return cursor.getCoffeeNote(dateHelper) else return null
+            if (cursor.moveToFirst()) return cursor.getCoffeeNote(dateTimeFormatter) else return null
         }
     }
 
@@ -58,7 +59,7 @@ class BeansTypeDataManagerImpl(
         val cursor = queryBeansTypes(null, null)
 
         return generateSequence { if (cursor.moveToNext()) cursor else null }
-                .map { cursor.getBeansType(dateHelper)}
+                .map { cursor.getBeansType(dateTimeFormatter)}
                 .toList()
     }
 
@@ -68,7 +69,7 @@ class BeansTypeDataManagerImpl(
                 arrayOf(id.toString()))
 
         cursor.use {
-            if (cursor.moveToFirst()) return cursor.getBeansType(dateHelper) else return null
+            if (cursor.moveToFirst()) return cursor.getBeansType(dateTimeFormatter) else return null
         }
     }
 
@@ -152,7 +153,7 @@ class BeansTypeDataManagerImpl(
         contentValues.put(BeansTypeTable.Cols.NAME, beansType.name)
         contentValues.put(BeansTypeTable.Cols.COUNTRY, beansType.country)
         contentValues.put(BeansTypeTable.Cols.ROAST_LEVEL, beansType.roastLevel)
-        contentValues.put(BeansTypeTable.Cols.DATE, dateHelper.dateToString(beansType.date))
+        contentValues.put(BeansTypeTable.Cols.DATE, beansType.date.format(dateTimeFormatter))
         return contentValues
     }
 
@@ -163,7 +164,7 @@ class BeansTypeDataManagerImpl(
         coffeeNote.beansTypeId?.let {
             contentValues.put(CoffeeNotesTable.Cols.BEANS_TYPE_ID, it.toString())
         }
-        contentValues.put(CoffeeNotesTable.Cols.DATE, dateHelper.dateToString(coffeeNote.date))
+        contentValues.put(CoffeeNotesTable.Cols.DATE, coffeeNote.date.format(dateTimeFormatter))
         return contentValues
     }
 }

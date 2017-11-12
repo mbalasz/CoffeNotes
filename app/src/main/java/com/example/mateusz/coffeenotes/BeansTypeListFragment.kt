@@ -12,7 +12,7 @@ import com.example.mateusz.coffeenotes.application.MyApplication
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
 import com.example.mateusz.coffeenotes.view.ContentViewHolder
 import com.example.mateusz.coffeenotes.view.EditableListFragment
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 class BeansTypeListFragment : EditableListFragment<BeansType>() {

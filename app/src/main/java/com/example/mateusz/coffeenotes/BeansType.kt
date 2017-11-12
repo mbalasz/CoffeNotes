@@ -1,6 +1,7 @@
 package com.example.mateusz.coffeenotes
 
-import java.util.*
+import org.threeten.bp.LocalDate
+import java.util.UUID
 
 data class BeansType(
     val id: UUID = UUID.randomUUID(),
@@ -8,5 +9,5 @@ data class BeansType(
     var country: String? = null,
     var roastLevel: Int = 1,
     var photoFileName: String = "IMG_$id.jpg",
-    var date: Date = Calendar.getInstance().time
+    var date: LocalDate = LocalDate.now()
 )
