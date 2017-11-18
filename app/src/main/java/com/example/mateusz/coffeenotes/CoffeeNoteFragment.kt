@@ -1,9 +1,11 @@
 package com.example.mateusz.coffeenotes
 
+import android.annotation.TargetApi
 import android.app.Activity.RESULT_OK
 import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.CardView
@@ -13,6 +15,9 @@ import android.view.*
 import android.widget.*
 import com.example.mateusz.coffeenotes.application.MyApplication
 import com.example.mateusz.coffeenotes.database.BeansTypeDataManager
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import kotterknife.bindView
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
@@ -32,6 +37,7 @@ class CoffeeNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     private val beansTypeCardView: CardView by bindView(R.id.beans_type_card_view)
     private val beansNameTextView: TextView by bindView(R.id.beans_name_text_view)
     private val beansCountryTextView: TextView by bindView(R.id.beans_country_text_view)
+    private val beansTypeImageView: ImageView by bindView(R.id.beans_type_image_view)
 
     private lateinit var datePickerDialog: DatePickerDialog
     private val dateButton: Button by bindView(R.id.date_picker_button)
@@ -73,7 +79,24 @@ class CoffeeNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         initCoffeeTypeSpinner()
         initBeansTypeCardView()
         initDatePicker()
+        beansTypeImageView.viewTreeObserver.addOnGlobalLayoutListener(
+            object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    updateBeansTypeCardViewUi()
+                    removeOnGlobalLayoutListener(beansTypeImageView, this)
+                }
+            })
         updateUi()
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    fun removeOnGlobalLayoutListener(v: View, listener: ViewTreeObserver.OnGlobalLayoutListener) {
+        if (Build.VERSION.SDK_INT < 16) {
+            v.viewTreeObserver.removeGlobalOnLayoutListener(listener)
+        } else {
+            v.viewTreeObserver.removeOnGlobalLayoutListener(listener)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -116,7 +139,6 @@ class CoffeeNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     private fun updateUi() {
         coffeeNoteTitleEditText.setText(coffeeNote.title)
-        updateBeansTypeCardViewUi()
     }
 
     private fun initCoffeeNoteTitleEditText() {
@@ -155,8 +177,6 @@ class CoffeeNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             val intent = BeansTypeListActivity.newIntent(context, coffeeNote.beansTypeId)
             startActivityForResult(intent, SELECT_COFFEE_BEANS_TYPE_REQUEST)
         }
-
-        updateBeansTypeCardViewUi()
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
@@ -184,9 +204,24 @@ class CoffeeNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     private fun updateBeansTypeCardViewUi() {
         coffeeNote.beansTypeId?.let {
-            val selectedBeansType = beansTypeDataManager.getBeansTypeById(it)
-            beansNameTextView.text = selectedBeansType?.name
-            beansCountryTextView.text = selectedBeansType?.country
+            beansTypeDataManager.getBeansTypeById(it)?. let {
+                beansNameTextView.text = it.name
+                beansCountryTextView.text = it.country
+                val photoFile = beansTypeDataManager.getPhotoFile(it)
+                if (photoFile.exists()) {
+                    async(UI) {
+                        val getScaledBitmap = async(CommonPool) {
+                            PictureUtils.getScaledBitmap(
+                                    photoFile.path,
+                                    beansTypeImageView.width,
+                                    beansTypeImageView.height)
+                        }
+                        beansTypeImageView.setImageBitmap(getScaledBitmap.await())
+                    }
+                } else {
+                    beansTypeImageView.setImageDrawable(null)
+                }
+            }
         }
     }
 

@@ -69,7 +69,7 @@ class BeansTypeDataManagerImpl(
                 arrayOf(id.toString()))
 
         cursor.use {
-            if (cursor.moveToFirst()) return cursor.getBeansType(dateTimeFormatter) else return null
+            return if (cursor.moveToFirst()) cursor.getBeansType(dateTimeFormatter) else null
         }
     }
 
